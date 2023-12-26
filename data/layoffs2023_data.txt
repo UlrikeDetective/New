@@ -1,8 +1,15 @@
 Data is from https://layoffs.fyi/
 
+Data is on two xlsx files layoffs2023_data and biggest_layoffs
+
 Printed table to a pdf file than created with Adobe Acrobat Reader a xlsx file.
 
 Data cleaning - removed from location column non-USA. 
 
 Added two columns: company size before layoff and company size after layoffs.
 
+Data cleaning biggist_layoffs: modified companies names, add four new columns: day.month, year, country and continent 
+
+Data cleaning layoffs2023_data: modified companies names, add two new columns: country and continent 
+
+Observations biggist_layoffs: There is a lot off missing data for the columns laid off and in Percent.
