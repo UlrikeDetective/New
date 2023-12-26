@@ -1,6 +1,7 @@
 .DS_Store
 output
 sources
+clone
 	../../.CFUserTextEncoding
 	../../.DS_Store
 	../../.RData
