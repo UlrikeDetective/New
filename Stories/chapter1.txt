@@ -3,3 +3,5 @@ Hello, how are you?
 What time is it?
 
 How's the learning going?
+
+I'm looking out of my window.
