@@ -1,0 +1,288 @@
+---
+title: "Tech_layoffs_2023"
+format: pdf
+editor: visual
+---
+
+# Reported layoffs in Tech Companies in 2023
+
+Data is from https://layoffs.fyi/
+
+Web scraping on Dec. 25th 2023
+
+Printed table to a pdf file than created with Adobe Acrobat Reader a xlsx file.
+
+Data cleaning - removed from location column non-USA.
+
+Added two columns: company size before layoff and company size after layoffs.
+
+Data cleaning layoffs2023_data: modified companies names, add two new columns: country and continent
+
+Observations: There is a lot off missing data for the columns laid off and in Percent.
+
+**Libraries:**
+
+```{r}
+install.packages("readxl")
+
+library(readxl)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+```
+
+**Dataset:**
+
+```{r}
+Layoffs_Tracker <- read_excel("Layoffs_Tracker.xlsx")
+```
+
+**First look at the data:**
+
+```{r}
+head(Layoffs_Tracker)
+str(Layoffs_Tracker)
+colnames(Layoffs_Tracker)
+glimpse(Layoffs_Tracker)
+```
+
+**Styles:**
+
+```{r}
+# Create a color palette for the bars
+my_colors <- c("darkgoldenrod2", "bisque1", "azure", "aquamarine2", "cornflowerblue", "cadetblue2","blue1","cyan","deepskyblue1" , "deepskyblue4"
+```
+
+**Reported layoffs counted - going by country and continent:**
+
+```{r}
+continent_count <- Layoffs_Tracker %>% 
+  count(Continent)
+
+continent_count
+
+country_count <- Layoffs_Tracker %>% 
+  count(Country)
+
+country_count
+print(country_count)
+
+country_count_desc <- country_count %>% 
+  arrange(desc(n))
+
+country_count_desc
+
+top_10_countries <- head(country_count_desc, 10)
+top_10_countries
+```
+
+**Pie Chart:**
+
+```{r}
+ggplot(continent_count, aes(x = "", y = n, fill = `Continent`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Continent") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black")) +
+  theme(legend.position = "bottom")
+```
+
+**Barplot:**
+
+```{r}
+# Bar plot for top 10 countries with specified colors
+ggplot(top_10_countries, aes(x = reorder(Country, -n), y = n, fill = Country)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Country", y = "Count") +
+  scale_fill_manual(values = my_colors)  +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"))
+```
+
+**Reported layoffs counted - going by location Headquarters, continent and country:**
+
+**North America:**
+
+```{r}
+north_america_locations_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "North America") %>%
+  count(`Location HQ`) |> 
+  arrange(desc(n))
+north_america_locations_2023
+
+Top_5_North_America_locations <- head(north_america_locations_2023, 5)
+Top_5_North_America_locations
+
+north_america_countries_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "North America") %>%
+  count(`Country`) |> 
+  arrange(desc(n))
+north_america_countries_2023
+```
+
+**Reported layoffs counted - going by location Headquarters, continent and country:**
+
+**South America:**
+
+```{r}
+south_america_locations_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "South America") %>%
+  count(`Location HQ`) |> 
+  arrange(desc(n))
+south_america_locations_2023
+
+Top_5_South_America_locations <- head(south_america_locations_2023, 5)
+Top_5_South_America_locations
+
+south_america_countries_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "South America") %>%
+  count(`Country`) |> 
+  arrange(desc(n))
+south_america_countries_2023
+```
+
+**Reported layoffs counted - going by location Headquarters, continent and country:**
+
+**Europe (with Israel and Turkey):**
+
+```{r}
+europe_locations_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Europe") %>%
+  count(`Location HQ`) |> 
+  arrange(desc(n))
+europe_locations_2023
+
+Top_5_Europe_locations <- head(europe_locations_2023, 5)
+Top_5_Europe_locations
+
+europe_countries_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Europe") %>%
+  count(`Country`) |> 
+  arrange(desc(n))
+europe_countries_2023
+
+Top_5_Europe_countries <- head(europe_countries_2023, 5)
+Top_5_Europe_countries
+```
+
+**Barplot:**
+
+```{r}
+ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill = `Location HQ`)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location HQ", y = "Count") +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"),
+```
+
+**Reported layoffs counted - going by location Headquarters, continent and country:**
+
+**Asia:**
+
+```{r}
+asia_locations_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Asia") %>%
+  count(`Location HQ`) |> 
+  arrange(desc(n))
+asia_locations_2023
+
+Top_5_Asia_locations <- head(asia_locations_2023, 5)
+Top_5_Asia_locations
+
+asia_countries_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Asia") %>%
+  count(`Country`) |> 
+  arrange(desc(n))
+asia_countries_2023
+
+Top_5_Asia_countries <- head(asia_countries_2023, 5)
+Top_5_Asia_countries
+```
+
+**Reported layoffs counted - going by location Headquarters, continent and country:**
+
+**Africa:**
+
+```{r}
+africa_locations_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Africa") %>%
+  count(`Location HQ`) |> 
+  arrange(desc(n))
+africa_locations_2023
+
+Top_5_Africa_locations <- head(africa_locations_2023, 5)
+Top_5_Africa_locations
+
+africa_countries_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Africa") %>%
+  count(`Country`) |> 
+  arrange(desc(n))
+africa_countries_2023
+```
+
+**Reported layoffs counted - going by location Headquarters, continent and country:**
+
+**Australia:**
+
+```{r}
+australia_locations_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Australia") %>%
+  count(`Location HQ`) |> 
+  arrange(desc(n))
+australia_locations_2023
+
+Top_5_Australia_locations <- head(australia_locations_2023, 5)
+Top_5_Australia_locations
+
+australia_countries_2023 <- Layoffs_Tracker %>%
+  filter(Continent == "Australia") %>%
+  count(`Country`) |> 
+  arrange(desc(n))
+australia_countries_2023
+```
+
+**Reported layoffs counted - going by location Headquarters**
+
+**USA:**
+
+```{r}
+usa_locations_2023 <- Layoffs_Tracker %>%
+  filter(Country == "USA") %>%
+  count(`Location HQ`) %>%
+  arrange(desc(n))
+
+usa_locations_2023
+
+Top_5_USA_locations <- head(usa_locations_2023, 5)
+Top_5_USA_locations
+```
+
+**Barplot:**
+
+```{r}
+ggplot(Top_5_USA_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill = `Location HQ`)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location HQ", y = "Count") +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"))
+```
+
+Piechart:
+
+```{r}
+ggplot(Top_5_USA_locations, aes(x = "", y = n, fill = `Location HQ`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location HQ") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black")) +
+  theme(legend.position = "bottom")  # Adjust legend position if needed
+```
