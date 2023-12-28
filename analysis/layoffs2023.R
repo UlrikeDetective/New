@@ -6,6 +6,7 @@ library(readxl)
 library(tidyverse)
 library(dplyr)
 library(knitr)
+library(ggplot2)
 
 Layoffs_Tracker <- read_excel("Layoffs_Tracker.xlsx")
 
@@ -27,7 +28,11 @@ country_count <- Layoffs_Tracker %>%
   count(Country)
 
 country_count
-print(country_count)
+
+continent_count <- Layoffs_Tracker %>% 
+  count(Continent)
+
+continent_count
 
 country_count_desc <- country_count %>% 
   arrange(desc(n))
@@ -154,21 +159,22 @@ kable(usa_locations_2023)
 # Create a table for top 10 countries
 kable(top_10_countries)
 
-library(ggplot2)
 
 # Bar plot for country_count
 ggplot(country_count, aes(x = Country, y = n)) +
   geom_bar(stat = "identity")
 
 # Create a color palette for the bars
-my_colors <- c("darkgoldenrod2", "bisque1", "azure", "aquamarine2", "cornflowerblue", "cadetblue2","blue1","cyan","deepskyblue1" , "deepskyblue4")
+my_colors <- c("darkblue", "darkslategray4", "azure4", "aquamarine2", "cornflowerblue", "cadetblue2","blue1","cyan","deepskyblue1" , "deepskyblue4")
 
 # Bar plot for top 10 countries with specified colors
 ggplot(top_10_countries, aes(x = reorder(Country, -n), y = n, fill = Country)) +
   geom_bar(stat = "identity") +
   labs(x = "Country", y = "Count") +
-  scale_fill_manual(values = my_colors) +  # Apply custom colors
-  coord_flip()
+  scale_fill_manual(values = my_colors)  +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"))
+  
 
 # Bar plot for usa_locations
 ggplot(usa_locations_2023, aes(x = `Location HQ`, y = n)) +
@@ -204,3 +210,13 @@ ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill =
   theme(legend.position = "bottom") +
   theme(panel.background = element_rect(fill = "black"),
         )
+
+# Create a pie chart
+ggplot(continent_count, aes(x = "", y = n, fill = `Continent`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Continent") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black")) +
+  theme(legend.position = "bottom")

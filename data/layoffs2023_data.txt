@@ -15,3 +15,27 @@ Data cleaning biggist_layoffs: modified companies names, add four new columns: d
 Data cleaning layoffs2023_data: modified companies names, add two new columns: country and continent 
 
 Observations biggist_layoffs: There is a lot off missing data for the columns laid off and in Percent.
+
+
+Technical Questions:
+
+How can I create maps of the locations of the headquarters?
+
+How can I create timelines of the layoffs?
+
+How to deal with the N/As?
+
+How to make charts with the number of layoffs by company?
+
+How to show companies that laid off all employees?
+
+
+Dataset questions:
+
+Understanding Money_Raised_in_$_mil" 
+
+
+Interpreting the Dataset:
+
+Size of companies in Dataset
+
