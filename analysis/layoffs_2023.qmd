@@ -216,6 +216,41 @@ south_america_locations_2023 <- Layoffs_Tracker %>%
   arrange(desc(n))
 south_america_locations_2023
 
+unique_south_american_locations <- Layoffs_Tracker %>%
+  filter(Continent == "South America") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for South America in the dataset"))
+
+print(unique_south_american_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_south_america <- unique(south_america_locations_2023$`Location HQ`)
+unique_HQ_list_south_america <- sort(unique_HQ_list_south_america)
+
+print(unique_HQ_list_south_america)
+
+cat("\n")
+
+entries_south_america_count <- Layoffs_Tracker %>%
+  filter(Continent == "South America") %>%
+  nrow()
+  
+print(paste("The dataset South America has", entries_south_america_count, "entries."))
+
+cat("\n")
+
+unique_south_america_companies <- Layoffs_Tracker %>%
+  filter(Continent == "South America") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies for South America in the dataset"))
+
+print(unique_south_america_companies$Message)
+
+cat("\n")
+
 Top_5_South_America_locations <- head(south_america_locations_2023, 5)
 Top_5_South_America_locations
 
@@ -236,6 +271,41 @@ europe_locations_2023 <- Layoffs_Tracker %>%
   count(`Location HQ`) |> 
   arrange(desc(n))
 europe_locations_2023
+
+unique_europe_locations <- Layoffs_Tracker %>%
+  filter(Continent == "Europe") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for Europe in the dataset"))
+
+print(unique_europe_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_europe <- unique(europe_locations_2023$`Location HQ`)
+unique_HQ_list_europe <- sort(unique_HQ_list_europe)
+
+print(unique_HQ_list_europe)
+
+cat("\n")
+
+entries_europe_count <- Layoffs_Tracker %>%
+  filter(Continent == "Europe") %>%
+  nrow()
+  
+print(paste("The dataset Europe has", entries_europe_count, "entries."))
+
+cat("\n")
+
+unique_europe_companies <- Layoffs_Tracker %>%
+  filter(Continent == "Europe") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies for Europe in the dataset"))
+
+print(unique_europe_companies$Message)
+
+cat("\n")
 
 Top_5_Europe_locations <- head(europe_locations_2023, 5)
 Top_5_Europe_locations
@@ -274,6 +344,41 @@ asia_locations_2023 <- Layoffs_Tracker %>%
   arrange(desc(n))
 asia_locations_2023
 
+unique_asia_locations <- Layoffs_Tracker %>%
+  filter(Continent == "Asia") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for Asia in the dataset"))
+
+print(unique_asia_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_asia <- unique(asia_locations_2023$`Location HQ`)
+unique_HQ_list_asia <- sort(unique_HQ_list_asia)
+
+print(unique_HQ_list_asia)
+
+cat("\n")
+
+entries_asia_count <- Layoffs_Tracker %>%
+  filter(Continent == "Asia") %>%
+  nrow()
+  
+print(paste("The dataset Asia has", entries_asia_count, "entries."))
+
+cat("\n")
+
+unique_asia_companies <- Layoffs_Tracker %>%
+  filter(Continent == "Asia") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies for Asia in the dataset"))
+
+print(unique_asia_companies$Message)
+
+cat("\n")
+
 Top_5_Asia_locations <- head(asia_locations_2023, 5)
 Top_5_Asia_locations
 
@@ -298,6 +403,41 @@ africa_locations_2023 <- Layoffs_Tracker %>%
   arrange(desc(n))
 africa_locations_2023
 
+unique_africa_locations <- Layoffs_Tracker %>%
+  filter(Continent == "Africa") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for Africa in the dataset"))
+
+print(unique_africa_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_africa <- unique(africa_locations_2023$`Location HQ`)
+unique_HQ_list_africa <- sort(unique_HQ_list_africa)
+
+print(unique_HQ_list_africa)
+
+cat("\n")
+
+entries_africa_count <- Layoffs_Tracker %>%
+  filter(Continent == "Africa") %>%
+  nrow()
+  
+print(paste("The dataset Africa has", entries_africa_count, "entries."))
+
+cat("\n")
+
+unique_africa_companies <- Layoffs_Tracker %>%
+  filter(Continent == "Africa") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies for Africa in the dataset"))
+
+print(unique_africa_companies$Message)
+
+cat("\n")
+
 Top_5_Africa_locations <- head(africa_locations_2023, 5)
 Top_5_Africa_locations
 
@@ -319,6 +459,41 @@ australia_locations_2023 <- Layoffs_Tracker %>%
   arrange(desc(n))
 australia_locations_2023
 
+unique_australia_locations <- Layoffs_Tracker %>%
+  filter(Continent == "Australia") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for Australia in the dataset"))
+
+print(unique_australia_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_australia <- unique(australia_locations_2023$`Location HQ`)
+unique_HQ_list_australia <- sort(unique_HQ_list_australia)
+
+print(unique_HQ_list_australia)
+
+cat("\n")
+
+entries_australia_count <- Layoffs_Tracker %>%
+  filter(Continent == "Australia") %>%
+  nrow()
+  
+print(paste("The dataset Australia has", entries_australia_count, "entries."))
+
+cat("\n")
+
+unique_australia_companies <- Layoffs_Tracker %>%
+  filter(Continent == "Australia") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies for Australia in the dataset"))
+
+print(unique_australia_companies$Message)
+
+cat("\n")
+
 Top_5_Australia_locations <- head(australia_locations_2023, 5)
 Top_5_Australia_locations
 
@@ -339,7 +514,42 @@ usa_locations_2023 <- Layoffs_Tracker %>%
   count(`Location HQ`) %>%
   arrange(desc(n))
 
-usa_locations_2023
+# usa_locations_2023
+
+unique_usa_locations <- Layoffs_Tracker %>%
+  filter(Country == "USA") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for the USA in the dataset"))
+
+print(unique_usa_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_usa <- unique(usa_locations_2023$`Location HQ`)
+unique_HQ_list_usa <- sort(unique_HQ_list_usa)
+
+print(unique_HQ_list_usa)
+
+cat("\n")
+
+entries_usa_count <- Layoffs_Tracker %>%
+  filter(Country == "USA") %>%
+  nrow()
+  
+print(paste("The dataset USA has", entries_usa_count, "entries."))
+
+cat("\n")
+
+unique_usa_companies <- Layoffs_Tracker %>%
+  filter(Country == "USA") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies in the USA in the dataset"))
+
+print(unique_usa_companies$Message)
+
+cat("\n")
 
 Top_5_USA_locations <- head(usa_locations_2023, 5)
 Top_5_USA_locations
@@ -368,4 +578,202 @@ ggplot(Top_5_USA_locations, aes(x = "", y = n, fill = `Location HQ`)) +
   theme_void() +
   theme(panel.background = element_rect(fill = "black")) +
   theme(legend.position = "bottom")  # Adjust legend position if needed
+```
+
+**India:**
+
+```{r, echo = FALSE}
+india_locations_2023 <- Layoffs_Tracker %>%
+  filter(Country == "India") %>%
+  count(`Location HQ`) %>%
+  arrange(desc(n))
+
+# usa_locations_2023
+
+unique_india_locations <- Layoffs_Tracker %>%
+  filter(Country == "India") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations in India in the dataset"))
+
+print(unique_india_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_india <- unique(india_locations_2023$`Location HQ`)
+unique_HQ_list_india <- sort(unique_HQ_list_india)
+
+print(unique_HQ_list_india)
+
+cat("\n")
+
+entries_india_count <- Layoffs_Tracker %>%
+  filter(Country == "India") %>%
+  nrow()
+  
+print(paste("The dataset India has", entries_india_count, "entries."))
+
+cat("\n")
+
+unique_india_companies <- Layoffs_Tracker %>%
+  filter(Country == "India") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies in India in the dataset"))
+
+print(unique_india_companies$Message)
+
+cat("\n")
+
+Top_5_india_locations <- head(india_locations_2023, 5)
+Top_5_india_locations
+
+```
+
+**Canada:**
+
+```{r, echo = FALSE}
+canada_locations_2023 <- Layoffs_Tracker %>%
+  filter(Country == "Canada") %>%
+  count(`Location HQ`) %>%
+  arrange(desc(n))
+
+# usa_locations_2023
+
+unique_canada_locations <- Layoffs_Tracker %>%
+  filter(Country == "Canada") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations in Canada in the dataset"))
+
+print(unique_canada_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_canada <- unique(canada_locations_2023$`Location HQ`)
+unique_HQ_list_canada <- sort(unique_HQ_list_canada)
+
+print(unique_HQ_list_canada)
+
+cat("\n")
+
+entries_canada_count <- Layoffs_Tracker %>%
+  filter(Country == "Canada") %>%
+  nrow()
+  
+print(paste("The dataset Canada has", entries_canada_count, "entries."))
+
+cat("\n")
+
+unique_canada_companies <- Layoffs_Tracker %>%
+  filter(Country == "Canada") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies in Canada in the dataset"))
+
+print(unique_canada_companies$Message)
+
+cat("\n")
+
+Top_5_canada_locations <- head(canada_locations_2023, 5)
+Top_5_canada_locations
+```
+
+**The United Kingdom:**
+
+```{r, echo = FALSE}
+uk_locations_2023 <- Layoffs_Tracker %>%
+  filter(Country == "United Kingdom") %>%
+  count(`Location HQ`) %>%
+  arrange(desc(n))
+
+# usa_locations_2023
+
+unique_uk_locations <- Layoffs_Tracker %>%
+  filter(Country == "United Kingdom") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations for the United Kingdom in the dataset"))
+
+print(unique_uk_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_uk <- unique(uk_locations_2023$`Location HQ`)
+unique_HQ_list_uk <- sort(unique_HQ_list_uk)
+
+print(unique_HQ_list_uk)
+
+cat("\n")
+
+entries_uk_count <- Layoffs_Tracker %>%
+  filter(Country == "United Kingdom") %>%
+  nrow()
+  
+print(paste("The dataset United Kingdom has", entries_uk_count, "entries."))
+
+cat("\n")
+
+unique_uk_companies <- Layoffs_Tracker %>%
+  filter(Country == "United Kingdom") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies in the United Kingdom in the dataset"))
+
+print(unique_uk_companies$Message)
+
+cat("\n")
+
+Top_5_UK_locations <- head(uk_locations_2023, 5)
+Top_5_UK_locations
+
+```
+
+**Germany:**
+
+```{r, echo = FALSE}
+germany_locations_2023 <- Layoffs_Tracker %>%
+  filter(Country == "Germany") %>%
+  count(`Location HQ`) %>%
+  arrange(desc(n))
+
+# usa_locations_2023
+
+unique_germany_locations <- Layoffs_Tracker %>%
+  filter(Country == "Germany") %>%
+  distinct(`Location HQ`) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique HQ locations in Germany in the dataset"))
+
+print(unique_germany_locations$Message)
+
+cat("\n")
+
+unique_HQ_list_germany <- unique(germany_locations_2023$`Location HQ`)
+unique_HQ_list_germany <- sort(unique_HQ_list_germany)
+
+print(unique_HQ_list_germany)
+
+cat("\n")
+
+entries_germany_count <- Layoffs_Tracker %>%
+  filter(Country == "Germany") %>%
+  nrow()
+  
+print(paste("The dataset Germany has", entries_germany_count, "entries."))
+
+cat("\n")
+
+unique_germany_companies <- Layoffs_Tracker %>%
+  filter(Country == "Germany") %>%
+  distinct(Company) %>%
+  summarise(Count = n()) %>%
+  mutate(Message = paste("There are", Count, "unique companies in Germany in the dataset"))
+
+print(unique_germany_companies$Message)
+
+cat("\n")
+
+Top_5_Germany_locations <- head(germany_locations_2023, 5)
+Top_5_Germany_locations
 ```
