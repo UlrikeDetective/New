@@ -22,41 +22,45 @@ Observations: There is a lot off missing data for the columns laid off and in Pe
 
 **Libraries:**
 
-```{r}
-install.packages("readxl")
+```{r, echo = FALSE}
 
 library(readxl)
 library(tidyverse)
 library(dplyr)
 library(knitr)
 library(ggplot2)
+library(skimr)
+library(viridis)
 ```
 
 **Dataset:**
 
-```{r}
-Layoffs_Tracker <- read_excel("Layoffs_Tracker.xlsx")
+```{r, echo = FALSE}
+Layoffs_Tracker <- read_excel("/Users/ulrike_imac_air/projects/Trial_and_error/data/Layoffs_Tracker.xlsx")
 ```
 
 **First look at the data:**
 
-```{r}
-head(Layoffs_Tracker)
-str(Layoffs_Tracker)
-colnames(Layoffs_Tracker)
-glimpse(Layoffs_Tracker)
+```{r, echo = FALSE}
+# head(Layoffs_Tracker)
+# str(Layoffs_Tracker)
+# colnames(Layoffs_Tracker)
+# glimpse(Layoffs_Tracker)
 ```
 
 **Styles:**
 
-```{r}
-# Create a color palette for the bars
-my_colors <- c("darkblue", "darkslategray4", "azure3", "aquamarine2", "cornflowerblue", "cadetblue2","blue1","cyan","deepskyblue1" , "deepskyblue4"
+```{r, echo = FALSE}
+
+my_colors <- c("darkblue", "darkslategray4", "darkslategray2", "azure3", "aquamarine2", "cornflowerblue", "cadetblue2","blue1","cyan","deepskyblue1","lightblue", "deepskyblue", "azure1", "aquamarine", "cadetblue", "blue2","cyan1", "deepskyblue2", "darkslategray1", "azure2", "aquamarine3", "cadetblue3", "blue3", "cyan2", "deepskyblue3", "darkslategray3", "azure", "cyan3", "blue4", "deepskyblue4", "cadetblue4", "yellow", "lightyellow")
 ```
 
 **Describing the Data:**
 
 ```{r, echo = FALSE}
+
+skim(Layoffs_Tracker)
+
 unique_countries <- Layoffs_Tracker %>%
   distinct(Country) %>%
   summarise(Count = n()) %>%
@@ -92,7 +96,7 @@ unique_companies <- Layoffs_Tracker %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique companies in the dataset"))
 
-print(unique_companies$Messag
+print(unique_companies$Message)
 ```
 
 **Reported layoffs counted - going by country and continent:**
@@ -117,23 +121,22 @@ top_10_countries <- head(country_count_desc, 10)
 top_10_countries
 ```
 
-**Pie Chart:**
+**Barplot: Continent count**
 
 ```{r, echo = FALSE}
-pie_chart_continent_count <- ggplot(continent_count, aes(x = "", y = n, fill = Continent)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar("y", start = 0) +
-  labs(fill = "Continent") +
-  scale_fill_manual(values = my_colors) +
-  ggtitle("Pie chart - Reported Layoffs 2023 by continent") +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "azure2"),
+ggplot(continent_count_desc, aes(x = reorder(Continent, -n), y = n, fill = Continent)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Continent", y = "Count") +
+  scale_fill_manual(values = my_colors)  +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs \n by continent (counted)") +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"),
         legend.position = "bottom",
-        plot.title = element_text(face = "bold", size = 16))
+        plot.title = element_text(face = "bold", size = 14))
 
 ```
 
-**Barplot:**
+**Barplot: TOP 10 Countries**
 
 ```{r, echo = FALSE}
 # Bar plot for top 10 countries with specified colors
@@ -141,7 +144,7 @@ ggplot(top_10_countries, aes(x = reorder(Country, -n), y = n, fill = Country)) +
   geom_bar(stat = "identity") +
   labs(x = "Country", y = "Count") +
   scale_fill_manual(values = my_colors)  +
-  ggtitle("Reported Layoffs 2023 - Most reported layoffs by country (counted)") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs \n by country (counted)") +
   theme(legend.position = "bottom") +
   theme(panel.background = element_rect(fill = "black"),
         legend.position = "bottom",
@@ -155,12 +158,12 @@ ggplot(top_10_countries, aes(x = reorder(Country, -n), y = n, fill = Country)) +
 ```{r, echo = FALSE}
 north_america_locations_2023 <- Layoffs_Tracker %>%
   filter(Continent == "North America") %>%
-  count(`Location HQ`) %>%
+  count(`Location_HQ`) %>%
   arrange(desc(n))
 
 unique_north_american_locations <- Layoffs_Tracker %>%
   filter(Continent == "North America") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for North America in the dataset"))
 
@@ -168,7 +171,7 @@ print(unique_north_american_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_north_america <- unique(north_america_locations_2023$`Location HQ`)
+unique_HQ_list_north_america <- unique(north_america_locations_2023$`Location_HQ`)
 unique_HQ_list_north_america <- sort(unique_HQ_list_north_america)
 
 print(unique_HQ_list_north_america)
@@ -205,6 +208,38 @@ north_america_countries_2023 <- Layoffs_Tracker %>%
 north_america_countries_2023
 ```
 
+**Charts North America:**
+
+```{r, echo = FALSE}
+
+ggplot(Top_5_North_America_locations, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location_HQ", y = "Count") +
+  scale_fill_manual(values = my_colors)  +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in North America \n by Location HQ (counted)") +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 14))
+
+```
+
+```{r, echo = FALSE}
+larger_palette <- viridis_pal(option = "viridis")(n = 97)
+
+
+plot(ggplot(north_america_locations_2023, aes(x = "", y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location_HQ") +
+  scale_fill_manual(values = larger_palette) +
+  ggtitle("Pie chart - Reported Layoffs 2023 by Location HQ in North America") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "azure2"),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 16)))
+```
+
 **Reported layoffs counted - going by location Headquarters, continent and country:**
 
 **South America:**
@@ -212,13 +247,13 @@ north_america_countries_2023
 ```{r, echo = FALSE}
 south_america_locations_2023 <- Layoffs_Tracker %>%
   filter(Continent == "South America") %>%
-  count(`Location HQ`) |> 
+  count(`Location_HQ`) |> 
   arrange(desc(n))
 south_america_locations_2023
 
 unique_south_american_locations <- Layoffs_Tracker %>%
   filter(Continent == "South America") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for South America in the dataset"))
 
@@ -226,7 +261,7 @@ print(unique_south_american_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_south_america <- unique(south_america_locations_2023$`Location HQ`)
+unique_HQ_list_south_america <- unique(south_america_locations_2023$`Location_HQ`)
 unique_HQ_list_south_america <- sort(unique_HQ_list_south_america)
 
 print(unique_HQ_list_south_america)
@@ -263,18 +298,45 @@ south_america_countries_2023
 
 **Reported layoffs counted - going by location Headquarters, continent and country:**
 
+```{r, echo = FALSE}
+
+ggplot(Top_5_South_America_locations, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location_HQ", y = "Count") +
+  scale_fill_manual(values = my_colors)  +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in South America \n by Location HQ (counted) - TOP 5") +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 14))
+
+
+
+plot(ggplot(south_america_countries_2023, aes(x = "", y = n, fill = Country)) +
+       geom_bar(stat = "identity", width = 1) +
+       coord_polar("y", start = 0) +
+       scale_fill_manual(values = my_colors) +
+       labs(fill = "Country") +
+       ggtitle("Pie chart - Reported Layoffs 2023 by Country \n in South America") +
+       theme_void() +
+       theme(panel.background = element_rect(fill = "azure2"),
+             legend.position = "right",
+             plot.title = element_text(face = "bold", size = 16)))
+
+```
+
 **Europe (with Israel and Turkey):**
 
 ```{r, echo = FALSE}
 europe_locations_2023 <- Layoffs_Tracker %>%
   filter(Continent == "Europe") %>%
-  count(`Location HQ`) |> 
+  count(`Location_HQ`) |> 
   arrange(desc(n))
 europe_locations_2023
 
 unique_europe_locations <- Layoffs_Tracker %>%
   filter(Continent == "Europe") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for Europe in the dataset"))
 
@@ -282,7 +344,7 @@ print(unique_europe_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_europe <- unique(europe_locations_2023$`Location HQ`)
+unique_HQ_list_europe <- unique(europe_locations_2023$`Location_HQ`)
 unique_HQ_list_europe <- sort(unique_HQ_list_europe)
 
 print(unique_HQ_list_europe)
@@ -320,17 +382,29 @@ Top_5_Europe_countries <- head(europe_countries_2023, 5)
 Top_5_Europe_countries
 ```
 
-**Barplot:**
+**Reported layoffs counted - going by location Headquarters, continent and country:**
 
 ```{r, echo = FALSE}
-ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill = `Location HQ`)) +
+ggplot(Top_5_Europe_locations, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
   geom_bar(stat = "identity") +
-  labs(x = "Location HQ", y = "Count") +
+  labs(x = "Location_HQ", y = "Count") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Europe \n by Location HQ (counted) - TOP 5") +
   scale_fill_manual(values = my_colors) +
   coord_flip() +
   theme(legend.position = "bottom") +
   theme(panel.background = element_rect(fill = "black"),
   )
+  
+plot(ggplot(europe_countries_2023, aes(x = "", y = n, fill = Country)) +
+       geom_bar(stat = "identity", width = 1) +
+       coord_polar("y", start = 0) +
+       scale_fill_manual(values = my_colors) +
+       labs(fill = "Country") +
+       ggtitle("Pie chart - Reported Layoffs 2023 by Country \n in Europe") +
+       theme_void() +
+       theme(panel.background = element_rect(fill = "azure2"),
+             legend.position = "right",
+             plot.title = element_text(face = "bold", size = 16)))  
 ```
 
 **Reported layoffs counted - going by location Headquarters, continent and country:**
@@ -340,13 +414,13 @@ ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill =
 ```{r, echo = FALSE}
 asia_locations_2023 <- Layoffs_Tracker %>%
   filter(Continent == "Asia") %>%
-  count(`Location HQ`) |> 
+  count(`Location_HQ`) |> 
   arrange(desc(n))
 asia_locations_2023
 
 unique_asia_locations <- Layoffs_Tracker %>%
   filter(Continent == "Asia") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for Asia in the dataset"))
 
@@ -354,7 +428,7 @@ print(unique_asia_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_asia <- unique(asia_locations_2023$`Location HQ`)
+unique_HQ_list_asia <- unique(asia_locations_2023$`Location_HQ`)
 unique_HQ_list_asia <- sort(unique_HQ_list_asia)
 
 print(unique_HQ_list_asia)
@@ -394,18 +468,42 @@ Top_5_Asia_countries
 
 **Reported layoffs counted - going by location Headquarters, continent and country:**
 
+```{r, echo = FALSE}
+ggplot(Top_5_Asia_locations, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location_HQ", y = "Count") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Asia \n by Location HQ (counted) - TOP 5") +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"),
+  )
+  
+plot(ggplot(asia_countries_2023, aes(x = "", y = n, fill = Country)) +
+       geom_bar(stat = "identity", width = 1) +
+       coord_polar("y", start = 0) +
+       scale_fill_manual(values = my_colors) +
+       labs(fill = "Country") +
+       ggtitle("Pie chart - Reported Layoffs 2023 by Country \n in Asia") +
+       theme_void() +
+       theme(panel.background = element_rect(fill = "azure2"),
+             legend.position = "right",
+             plot.title = element_text(face = "bold", size = 16)))  
+
+```
+
 **Africa:**
 
 ```{r, echo = FALSE}
 africa_locations_2023 <- Layoffs_Tracker %>%
   filter(Continent == "Africa") %>%
-  count(`Location HQ`) |> 
+  count(`Location_HQ`) |> 
   arrange(desc(n))
 africa_locations_2023
 
 unique_africa_locations <- Layoffs_Tracker %>%
   filter(Continent == "Africa") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for Africa in the dataset"))
 
@@ -413,7 +511,7 @@ print(unique_africa_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_africa <- unique(africa_locations_2023$`Location HQ`)
+unique_HQ_list_africa <- unique(africa_locations_2023$`Location_HQ`)
 unique_HQ_list_africa <- sort(unique_HQ_list_africa)
 
 print(unique_HQ_list_africa)
@@ -450,18 +548,42 @@ africa_countries_2023
 
 **Reported layoffs counted - going by location Headquarters, continent and country:**
 
+```{r, echo = FALSE}
+ggplot(africa_locations_2023, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location_HQ", y = "Count") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Africa \n by Location HQ (counted)") +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  theme(legend.position = "right") +
+  theme(panel.background = element_rect(fill = "black"),
+  )
+  
+plot(ggplot(africa_countries_2023, aes(x = "", y = n, fill = Country)) +
+       geom_bar(stat = "identity", width = 1) +
+       coord_polar("y", start = 0) +
+       scale_fill_manual(values = my_colors) +
+       labs(fill = "Country") +
+       ggtitle("Pie chart - Reported Layoffs 2023 by Country \n in Africa") +
+       theme_void() +
+       theme(panel.background = element_rect(fill = "azure2"),
+             legend.position = "right",
+             plot.title = element_text(face = "bold", size = 16)))  
+
+```
+
 **Australia:**
 
 ```{r, echo = FALSE}
 australia_locations_2023 <- Layoffs_Tracker %>%
   filter(Continent == "Australia") %>%
-  count(`Location HQ`) |> 
+  count(`Location_HQ`) |> 
   arrange(desc(n))
 australia_locations_2023
 
 unique_australia_locations <- Layoffs_Tracker %>%
   filter(Continent == "Australia") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for Australia in the dataset"))
 
@@ -469,7 +591,7 @@ print(unique_australia_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_australia <- unique(australia_locations_2023$`Location HQ`)
+unique_HQ_list_australia <- unique(australia_locations_2023$`Location_HQ`)
 unique_HQ_list_australia <- sort(unique_HQ_list_australia)
 
 print(unique_HQ_list_australia)
@@ -504,6 +626,33 @@ australia_countries_2023 <- Layoffs_Tracker %>%
 australia_countries_2023
 ```
 
+**Charts:**
+
+```{r, echo = FALSE}
+ggplot(australia_locations_2023, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Location_HQ", y = "Count") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Austalia \n by Location HQ (counted)") +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  theme(legend.position = "bottom") +
+  theme(panel.background = element_rect(fill = "black"),
+  )
+  
+plot(ggplot(australia_countries_2023, aes(x = "", y = n, fill = Country)) +
+       geom_bar(stat = "identity", width = 1) +
+       coord_polar("y", start = 0) +
+       scale_fill_manual(values = my_colors) +
+       labs(fill = "Country") +
+       ggtitle("Pie chart - Reported Layoffs 2023 by Country \n in Australia") +
+       theme_void() +
+       theme(panel.background = element_rect(fill = "azure2"),
+             legend.position = "right",
+             plot.title = element_text(face = "bold", size = 16)))  
+
+
+```
+
 **Reported layoffs counted - going by location Headquarters**
 
 **USA:**
@@ -511,14 +660,14 @@ australia_countries_2023
 ```{r, echo = FALSE}
 usa_locations_2023 <- Layoffs_Tracker %>%
   filter(Country == "USA") %>%
-  count(`Location HQ`) %>%
+  count(`Location_HQ`) %>%
   arrange(desc(n))
 
 # usa_locations_2023
 
 unique_usa_locations <- Layoffs_Tracker %>%
   filter(Country == "USA") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for the USA in the dataset"))
 
@@ -526,7 +675,7 @@ print(unique_usa_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_usa <- unique(usa_locations_2023$`Location HQ`)
+unique_HQ_list_usa <- unique(usa_locations_2023$`Location_HQ`)
 unique_HQ_list_usa <- sort(unique_HQ_list_usa)
 
 print(unique_HQ_list_usa)
@@ -558,26 +707,32 @@ Top_5_USA_locations
 **Barplot:**
 
 ```{r, echo = FALSE}
-ggplot(Top_5_USA_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill = `Location HQ`)) +
+ggplot(Top_5_USA_locations, aes(x = reorder(Location_HQ, -n), y = n, fill = Location_HQ)) +
   geom_bar(stat = "identity") +
-  labs(x = "Location HQ", y = "Count") +
+  labs(x = "Location_HQ", y = "Count") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Austalia \n by Location HQ (counted)") +
   scale_fill_manual(values = my_colors) +
   coord_flip() +
-  theme(legend.position = "bottom") +
-  theme(panel.background = element_rect(fill = "black"))
+  theme(legend.position = "right") +
+  theme(panel.background = element_rect(fill = "black"),
+  )
 ```
 
 Piechart:
 
 ```{r, echo = FALSE}
-ggplot(Top_5_USA_locations, aes(x = "", y = n, fill = `Location HQ`)) +
+
+larger_palette <- viridis_pal(option = "viridis")(n = 97)
+
+ggplot(usa_locations_2023, aes(x = "", y = n, fill = `Location_HQ`)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
-  labs(fill = "Location HQ") +
-  scale_fill_manual(values = my_colors) +
+  labs(fill = "Location_HQ") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in the USA \n by Location HQ (counted)") +
+  scale_fill_manual(values = larger_palette) +
   theme_void() +
-  theme(panel.background = element_rect(fill = "black")) +
-  theme(legend.position = "bottom")  # Adjust legend position if needed
+  theme(panel.background = element_rect(fill = "azure2")) +
+  theme(legend.position = "bottom")
 ```
 
 **India:**
@@ -585,14 +740,14 @@ ggplot(Top_5_USA_locations, aes(x = "", y = n, fill = `Location HQ`)) +
 ```{r, echo = FALSE}
 india_locations_2023 <- Layoffs_Tracker %>%
   filter(Country == "India") %>%
-  count(`Location HQ`) %>%
+  count(`Location_HQ`) %>%
   arrange(desc(n))
 
 # usa_locations_2023
 
 unique_india_locations <- Layoffs_Tracker %>%
   filter(Country == "India") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations in India in the dataset"))
 
@@ -600,7 +755,7 @@ print(unique_india_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_india <- unique(india_locations_2023$`Location HQ`)
+unique_HQ_list_india <- unique(india_locations_2023$`Location_HQ`)
 unique_HQ_list_india <- sort(unique_HQ_list_india)
 
 print(unique_HQ_list_india)
@@ -630,19 +785,33 @@ Top_5_india_locations
 
 ```
 
+```{r, echo = FALSE}
+
+ggplot(india_locations_2023, aes(x = "", y = n, fill = `Location_HQ`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location_HQ") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in India \n by Location HQ (counted)") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "azure2")) +
+  theme(legend.position = "right")
+
+```
+
 **Canada:**
 
 ```{r, echo = FALSE}
 canada_locations_2023 <- Layoffs_Tracker %>%
   filter(Country == "Canada") %>%
-  count(`Location HQ`) %>%
+  count(`Location_HQ`) %>%
   arrange(desc(n))
 
 # usa_locations_2023
 
 unique_canada_locations <- Layoffs_Tracker %>%
   filter(Country == "Canada") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations in Canada in the dataset"))
 
@@ -650,7 +819,7 @@ print(unique_canada_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_canada <- unique(canada_locations_2023$`Location HQ`)
+unique_HQ_list_canada <- unique(canada_locations_2023$`Location_HQ`)
 unique_HQ_list_canada <- sort(unique_HQ_list_canada)
 
 print(unique_HQ_list_canada)
@@ -679,19 +848,33 @@ Top_5_canada_locations <- head(canada_locations_2023, 5)
 Top_5_canada_locations
 ```
 
+```{r, echo = FALSE}
+
+ggplot(canada_locations_2023, aes(x = "", y = n, fill = `Location_HQ`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location_HQ") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Canada \n by Location HQ (counted)") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "azure2")) +
+  theme(legend.position = "right")
+
+```
+
 **The United Kingdom:**
 
 ```{r, echo = FALSE}
 uk_locations_2023 <- Layoffs_Tracker %>%
   filter(Country == "United Kingdom") %>%
-  count(`Location HQ`) %>%
+  count(`Location_HQ`) %>%
   arrange(desc(n))
 
 # usa_locations_2023
 
 unique_uk_locations <- Layoffs_Tracker %>%
   filter(Country == "United Kingdom") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations for the United Kingdom in the dataset"))
 
@@ -699,7 +882,7 @@ print(unique_uk_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_uk <- unique(uk_locations_2023$`Location HQ`)
+unique_HQ_list_uk <- unique(uk_locations_2023$`Location_HQ`)
 unique_HQ_list_uk <- sort(unique_HQ_list_uk)
 
 print(unique_HQ_list_uk)
@@ -729,19 +912,32 @@ Top_5_UK_locations
 
 ```
 
+```{r, echo = FALSE}
+
+ggplot(uk_locations_2023, aes(x = "", y = n, fill = `Location_HQ`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location_HQ") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in the United Kingdom \n by Location HQ (counted)") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "azure4")) +
+  theme(legend.position = "right")
+```
+
 **Germany:**
 
 ```{r, echo = FALSE}
 germany_locations_2023 <- Layoffs_Tracker %>%
   filter(Country == "Germany") %>%
-  count(`Location HQ`) %>%
+  count(`Location_HQ`) %>%
   arrange(desc(n))
 
 # usa_locations_2023
 
 unique_germany_locations <- Layoffs_Tracker %>%
   filter(Country == "Germany") %>%
-  distinct(`Location HQ`) %>%
+  distinct(`Location_HQ`) %>%
   summarise(Count = n()) %>%
   mutate(Message = paste("There are", Count, "unique HQ locations in Germany in the dataset"))
 
@@ -749,7 +945,7 @@ print(unique_germany_locations$Message)
 
 cat("\n")
 
-unique_HQ_list_germany <- unique(germany_locations_2023$`Location HQ`)
+unique_HQ_list_germany <- unique(germany_locations_2023$`Location_HQ`)
 unique_HQ_list_germany <- sort(unique_HQ_list_germany)
 
 print(unique_HQ_list_germany)
@@ -776,4 +972,52 @@ cat("\n")
 
 Top_5_Germany_locations <- head(germany_locations_2023, 5)
 Top_5_Germany_locations
+```
+
+```{r, echo = FALSE}
+
+ggplot(germany_locations_2023, aes(x = "", y = n, fill = `Location_HQ`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location_HQ") +
+  ggtitle("Reported Layoffs 2023 - Most reported layoffs in Germany \n by Location HQ (counted)") +
+  scale_fill_manual(values = my_colors) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "azure4")) +
+  theme(legend.position = "right")
+
+```
+
+Removing rows with missing values from Dataset
+
+```{r, echo = FALSE}
+
+Layoffs_Tracker_without_na <- na.omit(Layoffs_Tracker)
+skim(Layoffs_Tracker_without_na)
+
+
+mean(Layoffs_Tracker_without_na$Company_Size_before_Layoffs)
+median(Layoffs_Tracker_without_na$Company_Size_before_Layoffs)
+
+mean(Layoffs_Tracker_without_na$Company_Size_after_layoffs)
+median(Layoffs_Tracker_without_na$Company_Size_after_layoffs)
+
+#Example countries
+country_count_na <- Layoffs_Tracker_without_na %>% 
+  count(Country)
+
+country_count_desc_na <- country_count_na %>% 
+  arrange(desc(n))
+
+country_count_desc_na
+
+top_10_countries_na <- head(country_count_desc_na, 10)
+top_10_countries_na
+#Example USA
+
+usa_locations_2023_without_na <- Layoffs_Tracker_without_na %>%
+  filter(Country == "USA") %>%
+  count(`Location_HQ`) %>%
+  arrange(desc(n))
+print(usa_locations_2023_without_na)
 ```

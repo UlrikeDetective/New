@@ -10,16 +10,11 @@ library(ggplot2)
 
 Layoffs_Tracker <- read_excel("Layoffs_Tracker.xlsx")
 
-View(biggest_Layoffs)
-head(biggest_Layoffs)
-str(biggest_Layoffs)
-colnames(biggest_Layoffs)
-class(biggest_Layoffs)
-glimpse(biggest_Layoffs)
-
+view(Layoffs_Tracker)
 head(Layoffs_Tracker)
 str(Layoffs_Tracker)
 colnames(Layoffs_Tracker)
+class(Layoffs_Tracker)
 glimpse(Layoffs_Tracker)
 
 
@@ -212,11 +207,78 @@ ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill =
         )
 
 # Create a pie chart
-ggplot(continent_count, aes(x = "", y = n, fill = `Continent`)) +
+pie_chart_continent_count <- ggplot(continent_count, aes(x = "", y = n, fill = Continent)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
   labs(fill = "Continent") +
   scale_fill_manual(values = my_colors) +
+  ggtitle("Pie chart - Reported Layoffs 2023 by continent") +
   theme_void() +
-  theme(panel.background = element_rect(fill = "black")) +
-  theme(legend.position = "bottom")
+  theme(panel.background = element_rect(fill = "azure2"),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 16))
+
+
+library(dplyr)
+
+# Assuming your dataset is named 'layoffs_2023'
+unique_countries <- Layoffs_Tracker %>%
+  distinct(Country) %>%
+  summarise(Count = n())
+
+# View unique country counts
+print(unique_countries)
+
+# Assuming your dataset is named 'layoffs_2023'
+unique_country_list <- unique(Layoffs_Tracker$Country)
+
+# View the list of unique countries
+print(unique_country_list)
+
+library(skimr)
+skim(Layoffs_Tracker)
+
+
+# Description: Remove rows with missing values.
+Layoffs_Tracker_without_na <- na.omit(Layoffs_Tracker)
+skim(Layoffs_Tracker_without_na)
+
+
+mean(Layoffs_Tracker_without_na$Company_Size_before_Layoffs)
+median(Layoffs_Tracker_without_na$Company_Size_before_Layoffs)
+
+mean(Layoffs_Tracker_without_na$Company_Size_after_layoffs)
+median(Layoffs_Tracker_without_na$Company_Size_after_layoffs)
+
+usa_locations_2023_without_na <- Layoffs_Tracker_without_na %>%
+  filter(Country == "USA") %>%
+  count(`Location HQ`) %>%
+  arrange(desc(n))
+print(usa_locations_2023_without_na)
+
+
+country_count_na <- Layoffs_Tracker_without_na %>% 
+  count(Country)
+
+country_count_desc_na <- country_count_na %>% 
+  arrange(desc(n))
+
+country_count_desc_na
+
+top_10_countries_na <- head(country_count_desc_na, 10)
+top_10_countries_na
+
+pie_chart_north_america_locations_2023 <- ggplot(north_america_locations_2023, aes(x = "", y = n, fill = Location_HQ)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Location_HQ") +
+  scale_fill_manual(values = my_colors) +
+  ggtitle("Pie chart - Reported Layoffs 2023 by Location HQ in North America") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "azure2"),
+        legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 16))
+
+install.packages("colorspace")
+library(colorspace)
+install.packages("viridisLite")

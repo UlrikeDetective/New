@@ -39,3 +39,6 @@ Interpreting the Dataset:
 
 Size of companies in Dataset
 
+Day01: Started data analysis 
+Day02: Continue data analysis- countries and locations overview 
+
