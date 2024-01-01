@@ -52,7 +52,7 @@ Layoffs_Tracker <- read_excel("/Users/ulrike_imac_air/projects/Trial_and_error/d
 
 ```{r, echo = FALSE}
 
-my_colors <- c("darkblue", "darkslategray4", "darkslategray2", "azure3", "aquamarine2", "cornflowerblue", "cadetblue2","blue1","cyan","deepskyblue1","lightblue", "deepskyblue", "azure1", "aquamarine", "cadetblue", "blue2","cyan1", "deepskyblue2", "darkslategray1", "azure2", "aquamarine3", "cadetblue3", "blue3", "cyan2", "deepskyblue3", "darkslategray3", "azure", "cyan3", "blue4", "deepskyblue4", "cadetblue4", "yellow", "lightyellow")
+my_colors <- c("darkblue", "darkslategray4", "darkslategray2","yellow", "azure3", "aquamarine2", "cornflowerblue", "lightyellow", "cadetblue2","blue1","cyan","deepskyblue1","lightblue","darkgoldenrod", "deepskyblue", "azure1", "aquamarine", "darkgoldenrod1", "cadetblue", "blue2","cyan1", "deepskyblue2", "darkslategray1", "darkgoldenrod2", "azure2", "aquamarine3", "cadetblue3", "blue3", "cyan2", "deepskyblue3", "darkslategray3", "azure", "cyan3", "blue4", "deepskyblue4", "cadetblue4")
 ```
 
 **Describing the Data:**
@@ -227,17 +227,20 @@ ggplot(Top_5_North_America_locations, aes(x = reorder(Location_HQ, -n), y = n, f
 ```{r, echo = FALSE}
 larger_palette <- viridis_pal(option = "viridis")(n = 97)
 
+# Plot without a legend
 
 plot(ggplot(north_america_locations_2023, aes(x = "", y = n, fill = Location_HQ)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_polar("y", start = 0) +
-  labs(fill = "Location_HQ") +
-  scale_fill_manual(values = larger_palette) +
-  ggtitle("Pie chart - Reported Layoffs 2023 by Location HQ in North America") +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "azure2"),
-        legend.position = "bottom",
-        plot.title = element_text(face = "bold", size = 16)))
+       geom_bar(stat = "identity", width = 1) +
+       coord_flip() +
+       labs(fill = "Location_HQ") +
+       scale_fill_manual(values = larger_palette) +
+       ggtitle("Stacked Bar Chart - Reported Layoffs 2023 by Location HQ \n in North America") +
+       theme(panel.background = element_rect(fill = "azure2"),
+             legend.position = "none",  # Remove the legend
+             plot.title = element_text(face = "bold", size = 16)))
+
+
+
 ```
 
 **Reported layoffs counted - going by location Headquarters, continent and country:**

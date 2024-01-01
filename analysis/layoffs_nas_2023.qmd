@@ -1,0 +1,136 @@
+---
+title: "tech_layoffs_2023_without_na"
+format: pdf
+editor: visual
+---
+
+## Reported layoffs in Tech Companies in 2023 - Dataset without NAs
+
+Data is from https://layoffs.fyi/
+
+Web scraping on Dec. 25th 2023
+
+Printed table to a pdf file than created with Adobe Acrobat Reader a xlsx file.
+
+Data cleaning - removed from location column non-USA.
+
+Added two columns: company size before layoff and company size after layoffs.
+
+Data cleaning layoffs2023_data: modified companies names, add two new columns: country and continent
+
+Observations: There is a lot off missing data for the columns laid off and in Percent.
+
+**Libraries:**
+
+```{r, echo = FALSE}
+
+library(readxl)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(skimr)
+library(viridis)
+```
+
+**Dataset:**
+
+```{r, echo = FALSE}
+Layoffs_Tracker <- read_excel("/Users/ulrike_imac_air/projects/Trial_and_error/data/Layoffs_Tracker.xlsx")
+```
+
+**Removing rows with missing values from Dataset:**
+
+```{r, echo = FALSE}
+
+Layoffs_Tracker_without_na <- na.omit(Layoffs_Tracker)
+skim(Layoffs_Tracker_without_na)
+
+
+mean(Layoffs_Tracker_without_na$Company_Size_before_Layoffs)
+median(Layoffs_Tracker_without_na$Company_Size_before_Layoffs)
+
+mean(Layoffs_Tracker_without_na$Company_Size_after_layoffs)
+median(Layoffs_Tracker_without_na$Company_Size_after_layoffs)
+```
+
+**Styles:**
+
+```{r, echo = FALSE}
+
+my_colors <- c("darkblue", "darkslategray4", "darkslategray2","yellow", "azure3", "aquamarine2", "cornflowerblue", "lightyellow", "cadetblue2","blue1","cyan","deepskyblue1","lightblue","darkgoldenrod", "deepskyblue", "azure1", "aquamarine", "darkgoldenrod1", "cadetblue", "blue2","cyan1", "deepskyblue2", "darkslategray1", "darkgoldenrod2", "azure2", "aquamarine3", "cadetblue3", "blue3", "cyan2", "deepskyblue3", "darkslategray3", "azure", "cyan3", "blue4", "deepskyblue4", "cadetblue4")
+```
+
+```{r, echo = FALSE}
+
+
+custom_theme_layoffs <- function() {
+  #theme_minimal() %+replace%  
+  theme(
+    # Define the overall appearance of the plot
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_rect(fill = "white"),
+    panel.grid.major = element_line(color = "lightgray"),
+    panel.grid.minor = element_blank(),
+    
+    # Define the appearance of the axes
+    axis.line = element_line(color = "black"),
+    axis.text = element_text(color = "black"),
+    axis.title = element_text(color = "black", size = 12, face = "bold"),
+    axis.ticks = element_line(color = "black"),
+    
+    # Define the appearance of the legend
+    legend.background = element_rect(fill = "white"),
+    legend.title = element_text(color = "black", size = 10, face = "bold"),
+    legend.text = element_text(color = "black", size = 10),
+    
+    # Define the appearance of the plot title and subtitles
+    plot.title = element_text(color = "black", size = 14, face = "bold"),
+    plot.subtitle = element_text(color = "black", size = 12),
+    
+    # Define the appearance of the plot labels
+    plot.caption = element_text(color = "black", size = 10),
+    plot.tag = element_text(color = "black", size = 11, face = "bold"),
+    
+    scale_fill_manual(values = my_colors),
+    
+    # Remove the plot border
+    panel.border = element_blank()
+  )
+}
+
+#p <- ggplot(mtcars, aes(x = mpg, y = wt, color = factor(cyl))) +
+ # geom_point() +
+  #labs(title = "Custom Theme Example", subtitle = "Scatter plot of mpg vs. wt") +
+  #custom_theme()
+
+#print(p)
+```
+
+**Test:**
+
+```{r, echo = FALSE}
+#Example countries
+country_count_na <- Layoffs_Tracker_without_na %>% 
+  count(Country)
+
+country_count_desc_na <- country_count_na %>% 
+  arrange(desc(n))
+
+country_count_desc_na
+
+top_10_countries_na <- head(country_count_desc_na, 10)
+top_10_countries_na
+```
+
+```{r, echo = FALSE}
+
+ggplot(top_10_countries_na, aes(x = Country, y = n, fill = Country)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Most reported layoffs in Austalia by Location HQ (counted)", subtitle = "Bar plot of country counts", fill = "Country") +
+   scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  custom_theme_layoffs()
+
+
+```

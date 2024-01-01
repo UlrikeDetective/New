@@ -1,6 +1,8 @@
 # Layoffs 2023
 
 install.packages("readxl")
+install.packages("viridisLite")
+install.packages("ggplot2")
 
 library(readxl)
 library(tidyverse)
@@ -197,9 +199,9 @@ ggplot(Top_5_USA_locations, aes(x = "", y = n, fill = `Location HQ`)) +
 
 # Bar plot for european_locations
 
-ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill = `Location HQ`)) +
+ggplot(Top_5_Europe_locations, aes(x = reorder(`Location HQ`, -n), y = n, fill = `Location_HQ`)) +
   geom_bar(stat = "identity") +
-  labs(x = "Location HQ", y = "Count") +
+  labs(x = "Location_HQ", y = "Count") +
   scale_fill_manual(values = my_colors) +
   coord_flip() +
   theme(legend.position = "bottom") +
