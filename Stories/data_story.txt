@@ -1,0 +1,5 @@
+01. 2023 - Learning R and Python and SQL and Tableau, excel of course
+02. Doing some courses on Udemy, Coursera
+03. Visting Silicon Valley
+04. Going to conference
+05.  Learning charts in R - today pie, donut and diverging charts
