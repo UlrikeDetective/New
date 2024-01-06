@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Mozilla Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Adobe CMap resources are covered by their own copyright but the same license:
+
+    Copyright 1990-2015 Adobe Systems Incorporated.
+
+See https://github.com/adobe-type-tools/cmap-resources
+-->
+<html dir="ltr" mozdisallowselectionprint>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>PDF.js viewer</title>
+
+
+    <link rel="stylesheet" href="viewer.css">
+
+
+<!-- This snippet is used in production (included from viewer.html) -->
+<link rel="resource" type="application/l10n" href="locale/locale.properties">
+<script src="../build/pdf.js"></script>
+
+
+  <script src="viewer.js"></script>
+
+  </head>
+
+  <body tabindex="1">
+    <div id="outerContainer">
+
+      <div id="sidebarContainer">
+        <div id="toolbarSidebar">
+          <div id="toolbarSidebarLeft">
+            <div class="splitToolbarButton toggled">
+              <button id="viewThumbnail" class="toolbarButton toggled" title="Show Thumbnails" tabindex="2" data-l10n-id="thumbs">
+                 <span data-l10n-id="thumbs_label">Thumbnails</span>
+              </button>
+              <button id="viewOutline" class="toolbarButton" title="Show Document Outline (double-click to expand/collapse all items)" tabindex="3" data-l10n-id="document_outline">
+                 <span data-l10n-id="document_outline_label">Document Outline</span>
+              </button>
+              <button id="viewAttachments" class="toolbarButton" title="Show Attachments" tabindex="4" data-l10n-id="attachments">
+                 <span data-l10n-id="attachments_label">Attachments</span>
+              </button>
+              <button id="viewLayers" class="toolbarButton" title="Show Layers (double-click to reset all layers to the default state)" tabindex="5" data-l10n-id="layers">
+                 <span data-l10n-id="layers_label">Layers</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="toolbarSidebarRight">
+            <div id="outlineOptionsContainer" class="hidden">
+              <div class="verticalToolbarSeparator"></div>
+
+              <button id="currentOutlineItem" class="toolbarButton" disabled="disabled" title="Find Current Outline Item" tabindex="6" data-l10n-id="current_outline_item">
+                <span data-l10n-id="current_outline_item_label">Current Outline Item</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="sidebarContent">
+          <div id="thumbnailView">
+          </div>
+          <div id="outlineView" class="hidden">
+          </div>
+          <div id="attachmentsView" class="hidden">
+          </div>
+          <div id="layersView" class="hidden">
+          </div>
+        </div>
+        <div id="sidebarResizer"></div>
+      </div>  <!-- sidebarContainer -->
+
+      <div id="mainContainer">
+        <div class="findbar hidden doorHanger" id="findbar">
+          <div id="findbarInputContainer">
+            <input id="findInput" class="toolbarField" title="Find" placeholder="Find in document…" tabindex="91" data-l10n-id="find_input">
+            <div class="splitToolbarButton">
+              <button id="findPrevious" class="toolbarButton findPrevious" title="Find the previous occurrence of the phrase" tabindex="92" data-l10n-id="find_previous">
+                <span data-l10n-id="find_previous_label">Previous</span>
+              </button>
+              <div class="splitToolbarButtonSeparator"></div>
+              <button id="findNext" class="toolbarButton findNext" title="Find the next occurrence of the phrase" tabindex="93" data-l10n-id="find_next">
+                <span data-l10n-id="find_next_label">Next</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="findbarOptionsOneContainer">
+            <input type="checkbox" id="findHighlightAll" class="toolbarField" tabindex="94">
+            <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">Highlight all</label>
+            <input type="checkbox" id="findMatchCase" class="toolbarField" tabindex="95">
+            <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">Match case</label>
+          </div>
+          <div id="findbarOptionsTwoContainer">
+            <input type="checkbox" id="findEntireWord" class="toolbarField" tabindex="96">
+            <label for="findEntireWord" class="toolbarLabel" data-l10n-id="find_entire_word_label">Whole words</label>
+            <span id="findResultsCount" class="toolbarLabel hidden"></span>
+          </div>
+
+          <div id="findbarMessageContainer">
+            <span id="findMsg" class="toolbarLabel"></span>
+          </div>
+        </div>  <!-- findbar -->
+
+        <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
+          <div id="secondaryToolbarButtonContainer">
+            <button id="secondaryPresentationMode" class="secondaryToolbarButton presentationMode visibleLargeView" title="Switch to Presentation Mode" tabindex="51" data-l10n-id="presentation_mode">
+              <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
+            </button>
+
+            <button id="secondaryOpenFile" class="secondaryToolbarButton openFile visibleLargeView" title="Open File" tabindex="52" data-l10n-id="open_file">
+              <span data-l10n-id="open_file_label">Open</span>
+            </button>
+
+            <button id="secondaryPrint" class="secondaryToolbarButton print visibleMediumView" title="Print" tabindex="53" data-l10n-id="print">
+              <span data-l10n-id="print_label">Print</span>
+            </button>
+
+            <button id="secondaryDownload" class="secondaryToolbarButton download visibleMediumView" title="Download" tabindex="54" data-l10n-id="download">
+              <span data-l10n-id="download_label">Download</span>
+            </button>
+
+            <a href="#" id="secondaryViewBookmark" class="secondaryToolbarButton bookmark visibleSmallView" title="Current view (copy or open in new window)" tabindex="55" data-l10n-id="bookmark">
+              <span data-l10n-id="bookmark_label">Current View</span>
+            </a>
+
+            <div class="horizontalToolbarSeparator visibleLargeView"></div>
+
+            <button id="firstPage" class="secondaryToolbarButton firstPage" title="Go to First Page" tabindex="56" data-l10n-id="first_page">
+              <span data-l10n-id="first_page_label">Go to First Page</span>
+            </button>
+            <button id="lastPage" class="secondaryToolbarButton lastPage" title="Go to Last Page" tabindex="57" data-l10n-id="last_page">
+              <span data-l10n-id="last_page_label">Go to Last Page</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="pageRotateCw" class="secondaryToolbarButton rotateCw" title="Rotate Clockwise" tabindex="58" data-l10n-id="page_rotate_cw">
+              <span data-l10n-id="page_rotate_cw_label">Rotate Clockwise</span>
+            </button>
+            <button id="pageRotateCcw" class="secondaryToolbarButton rotateCcw" title="Rotate Counterclockwise" tabindex="59" data-l10n-id="page_rotate_ccw">
+              <span data-l10n-id="page_rotate_ccw_label">Rotate Counterclockwise</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="cursorSelectTool" class="secondaryToolbarButton selectTool toggled" title="Enable Text Selection Tool" tabindex="60" data-l10n-id="cursor_text_select_tool">
+              <span data-l10n-id="cursor_text_select_tool_label">Text Selection Tool</span>
+            </button>
+            <button id="cursorHandTool" class="secondaryToolbarButton handTool" title="Enable Hand Tool" tabindex="61" data-l10n-id="cursor_hand_tool">
+              <span data-l10n-id="cursor_hand_tool_label">Hand Tool</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator"></div>
+
+            <button id="scrollVertical" class="secondaryToolbarButton scrollModeButtons scrollVertical toggled" title="Use Vertical Scrolling" tabindex="62" data-l10n-id="scroll_vertical">
+              <span data-l10n-id="scroll_vertical_label">Vertical Scrolling</span>
+            </button>
+            <button id="scrollHorizontal" class="secondaryToolbarButton scrollModeButtons scrollHorizontal" title="Use Horizontal Scrolling" tabindex="63" data-l10n-id="scroll_horizontal">
+              <span data-l10n-id="scroll_horizontal_label">Horizontal Scrolling</span>
+            </button>
+            <button id="scrollWrapped" class="secondaryToolbarButton scrollModeButtons scrollWrapped" title="Use Wrapped Scrolling" tabindex="64" data-l10n-id="scroll_wrapped">
+              <span data-l10n-id="scroll_wrapped_label">Wrapped Scrolling</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator scrollModeButtons"></div>
+
+            <button id="spreadNone" class="secondaryToolbarButton spreadModeButtons spreadNone toggled" title="Do not join page spreads" tabindex="65" data-l10n-id="spread_none">
+              <span data-l10n-id="spread_none_label">No Spreads</span>
+            </button>
+            <button id="spreadOdd" class="secondaryToolbarButton spreadModeButtons spreadOdd" title="Join page spreads starting with odd-numbered pages" tabindex="66" data-l10n-id="spread_odd">
+              <span data-l10n-id="spread_odd_label">Odd Spreads</span>
+            </button>
+            <button id="spreadEven" class="secondaryToolbarButton spreadModeButtons spreadEven" title="Join page spreads starting with even-numbered pages" tabindex="67" data-l10n-id="spread_even">
+              <span data-l10n-id="spread_even_label">Even Spreads</span>
+            </button>
+
+            <div class="horizontalToolbarSeparator spreadModeButtons"></div>
+
+            <button id="documentProperties" class="secondaryToolbarButton documentProperties" title="Document Properties…" tabindex="68" data-l10n-id="document_properties">
+              <span data-l10n-id="document_properties_label">Document Properties…</span>
+            </button>
+          </div>
+        </div>  <!-- secondaryToolbar -->
+
+        <div class="toolbar">
+          <div id="toolbarContainer">
+            <div id="toolbarViewer">
+              <div id="toolbarViewerLeft">
+                <button id="sidebarToggle" class="toolbarButton" title="Toggle Sidebar" tabindex="11" data-l10n-id="toggle_sidebar" aria-expanded="false" aria-controls="sidebarContainer">
+                  <span data-l10n-id="toggle_sidebar_label">Toggle Sidebar</span>
+                </button>
+                <div class="toolbarButtonSpacer"></div>
+                <button id="viewFind" class="toolbarButton" title="Find in Document" tabindex="12" data-l10n-id="findbar" aria-expanded="false" aria-controls="findbar">
+                  <span data-l10n-id="findbar_label">Find</span>
+                </button>
+                <div class="splitToolbarButton hiddenSmallView">
+                  <button class="toolbarButton pageUp" title="Previous Page" id="previous" tabindex="13" data-l10n-id="previous">
+                    <span data-l10n-id="previous_label">Previous</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button class="toolbarButton pageDown" title="Next Page" id="next" tabindex="14" data-l10n-id="next">
+                    <span data-l10n-id="next_label">Next</span>
+                  </button>
+                </div>
+                <input type="number" id="pageNumber" class="toolbarField pageNumber" title="Page" value="1" size="4" min="1" tabindex="15" data-l10n-id="page" autocomplete="off">
+                <span id="numPages" class="toolbarLabel"></span>
+              </div>
+              <div id="toolbarViewerRight">
+                <button id="presentationMode" class="toolbarButton presentationMode hiddenLargeView" title="Switch to Presentation Mode" tabindex="31" data-l10n-id="presentation_mode">
+                  <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
+                </button>
+
+                <button id="openFile" class="toolbarButton openFile hiddenLargeView" title="Open File" tabindex="32" data-l10n-id="open_file">
+                  <span data-l10n-id="open_file_label">Open</span>
+                </button>
+
+                <button id="print" class="toolbarButton print hiddenMediumView" title="Print" tabindex="33" data-l10n-id="print">
+                  <span data-l10n-id="print_label">Print</span>
+                </button>
+
+                <button id="download" class="toolbarButton download hiddenMediumView" title="Download" tabindex="34" data-l10n-id="download">
+                  <span data-l10n-id="download_label">Download</span>
+                </button>
+                <a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView" title="Current view (copy or open in new window)" tabindex="35" data-l10n-id="bookmark">
+                  <span data-l10n-id="bookmark_label">Current View</span>
+                </a>
+
+                <div class="verticalToolbarSeparator hiddenSmallView"></div>
+
+                <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools" aria-expanded="false" aria-controls="secondaryToolbar">
+                  <span data-l10n-id="tools_label">Tools</span>
+                </button>
+              </div>
+              <div id="toolbarViewerMiddle">
+                <div class="splitToolbarButton">
+                  <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out" tabindex="21" data-l10n-id="zoom_out">
+                    <span data-l10n-id="zoom_out_label">Zoom Out</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button id="zoomIn" class="toolbarButton zoomIn" title="Zoom In" tabindex="22" data-l10n-id="zoom_in">
+                    <span data-l10n-id="zoom_in_label">Zoom In</span>
+                   </button>
+                </div>
+                <span id="scaleSelectContainer" class="dropdownToolbarButton">
+                  <select id="scaleSelect" title="Zoom" tabindex="23" data-l10n-id="zoom">
+                    <option id="pageAutoOption" title="" value="auto" selected="selected" data-l10n-id="page_scale_auto">Automatic Zoom</option>
+                    <option id="pageActualOption" title="" value="page-actual" data-l10n-id="page_scale_actual">Actual Size</option>
+                    <option id="pageFitOption" title="" value="page-fit" data-l10n-id="page_scale_fit">Page Fit</option>
+                    <option id="pageWidthOption" title="" value="page-width" data-l10n-id="page_scale_width">Page Width</option>
+                    <option id="customScaleOption" title="" value="custom" disabled="disabled" hidden="true"></option>
+                    <option title="" value="0.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 50 }'>50%</option>
+                    <option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 75 }'>75%</option>
+                    <option title="" value="1" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 100 }'>100%</option>
+                    <option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 125 }'>125%</option>
+                    <option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 150 }'>150%</option>
+                    <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 200 }'>200%</option>
+                    <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
+                    <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
+                  </select>
+                </span>
+              </div>
+            </div>
+            <div id="loadingBar">
+              <div class="progress">
+                <div class="glimmer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="viewerContainer" tabindex="0">
+          <div id="viewer" class="pdfViewer"></div>
+        </div>
+
+        <div id="errorWrapper" hidden='true'>
+          <div id="errorMessageLeft">
+            <span id="errorMessage"></span>
+            <button id="errorShowMore" data-l10n-id="error_more_info">
+              More Information
+            </button>
+            <button id="errorShowLess" data-l10n-id="error_less_info" hidden='true'>
+              Less Information
+            </button>
+          </div>
+          <div id="errorMessageRight">
+            <button id="errorClose" data-l10n-id="error_close">
+              Close
+            </button>
+          </div>
+          <div class="clearBoth"></div>
+          <textarea id="errorMoreInfo" hidden='true' readonly="readonly"></textarea>
+        </div>
+      </div> <!-- mainContainer -->
+
+      <div id="overlayContainer" class="hidden">
+        <div id="passwordOverlay" class="container hidden">
+          <div class="dialog">
+            <div class="row">
+              <p id="passwordText" data-l10n-id="password_label">Enter the password to open this PDF file:</p>
+            </div>
+            <div class="row">
+              <input type="password" id="password" class="toolbarField">
+            </div>
+            <div class="buttonRow">
+              <button id="passwordCancel" class="overlayButton"><span data-l10n-id="password_cancel">Cancel</span></button>
+              <button id="passwordSubmit" class="overlayButton"><span data-l10n-id="password_ok">OK</span></button>
+            </div>
+          </div>
+        </div>
+        <div id="documentPropertiesOverlay" class="container hidden">
+          <div class="dialog">
+            <div class="row">
+              <span data-l10n-id="document_properties_file_name">File name:</span> <p id="fileNameField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_file_size">File size:</span> <p id="fileSizeField">-</p>
+            </div>
+            <div class="separator"></div>
+            <div class="row">
+              <span data-l10n-id="document_properties_title">Title:</span> <p id="titleField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_author">Author:</span> <p id="authorField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_subject">Subject:</span> <p id="subjectField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_keywords">Keywords:</span> <p id="keywordsField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_creation_date">Creation Date:</span> <p id="creationDateField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_modification_date">Modification Date:</span> <p id="modificationDateField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_creator">Creator:</span> <p id="creatorField">-</p>
+            </div>
+            <div class="separator"></div>
+            <div class="row">
+              <span data-l10n-id="document_properties_producer">PDF Producer:</span> <p id="producerField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_version">PDF Version:</span> <p id="versionField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_page_count">Page Count:</span> <p id="pageCountField">-</p>
+            </div>
+            <div class="row">
+              <span data-l10n-id="document_properties_page_size">Page Size:</span> <p id="pageSizeField">-</p>
+            </div>
+            <div class="separator"></div>
+            <div class="row">
+              <span data-l10n-id="document_properties_linearized">Fast Web View:</span> <p id="linearizedField">-</p>
+            </div>
+            <div class="buttonRow">
+              <button id="documentPropertiesClose" class="overlayButton"><span data-l10n-id="document_properties_close">Close</span></button>
+            </div>
+          </div>
+        </div>
+        <div id="printServiceOverlay" class="container hidden">
+          <div class="dialog">
+            <div class="row">
+              <span data-l10n-id="print_progress_message">Preparing document for printing…</span>
+            </div>
+            <div class="row">
+              <progress value="0" max="100"></progress>
+              <span data-l10n-id="print_progress_percent" data-l10n-args='{ "progress": 0 }' class="relative-progress">0%</span>
+            </div>
+            <div class="buttonRow">
+              <button id="printCancel" class="overlayButton"><span data-l10n-id="print_progress_close">Cancel</span></button>
+            </div>
+          </div>
+        </div>
+      </div>  <!-- overlayContainer -->
+
+    </div> <!-- outerContainer -->
+    <div id="printContainer"></div>
+  </body>
+</html>
+
+<div class="modal__dialog micromodal-slide" id="quarto-log-error-modal" aria-hidden="true">
+  <div class="modal__overlay" tabindex="2" data-micromodal-close>
+    <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="quarto-log-error-modal-title">
+      <header class="modal__header">
+        <h2 class="modal__title" id="quarto-log-error-modal-title">
+          <i class="bi bi-exclamation-circle"></i>Error
+        </h2>
+        <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+      </header>
+      <div class="modal__content" id="quarto-log-error-modal-content">
+        <pre tabindex="1" id="quarto-log-error-display"></pre>
+      </div>
+      <footer class="modal__footer">
+      </footer>
+    </div>
+  </div>
+</div>
+<style type="text/css">
+#quarto-log-error-modal .modal__overlay {
+  z-index: 5000;
+}
+#quarto-log-error-modal-content {
+  border: 1px solid #dee2e6;
+  overflow-y: auto;
+}
+#quarto-log-error-display {
+  min-height: 100px;
+  padding: 8px;
+  margin-bottom: 0;
+  font-family: monospace;
+}
+#quarto-log-error-display:focus {
+  outline: none;
+}
+.modal__dialog {
+  font-size: 16px;
+}
+.modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal__container {
+  position: fixed;
+  top: 80px;
+  background-color: #fff;
+  padding: 15px;
+  padding-top: 10px;
+  min-width: 500px;
+  max-width: 90%;
+  max-height: 90vh;
+  border-radius: 4px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal__title {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+  border-bottom: none;
+  padding-bottom: 10px;
+  font-size: 20px;
+  color: rgb(191,71,65);
+  line-height: 1.25;
+  box-sizing: border-box;
+}
+.modal__title .bi {
+  margin-right: 7px;
+}
+.modal__close {
+  background: transparent;
+  border: 0;
+  margin-bottom: 10px;
+}
+.modal__header .modal__close:before { content: "\2715"; }
+.modal__content {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+@keyframes mmfadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}
+@keyframes mmfadeOut {
+    from { opacity: 1; }
+      to { opacity: 0; }
+}
+@keyframes mmslideIn {
+  from { transform: translateY(15%); }
+    to { transform: translateY(0); }
+}
+@keyframes mmslideOut {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10%); }
+}
+.micromodal-slide {
+  display: none;
+}
+.micromodal-slide.is-open {
+  display: block;
+}
+.micromodal-slide[aria-hidden="false"] .modal__overlay {
+  animation: mmfadeIn .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+.micromodal-slide[aria-hidden="false"] .modal__container {
+  animation: mmslideIn .3s cubic-bezier(0, 0, .2, 1);
+}
+.micromodal-slide[aria-hidden="true"] .modal__overlay {
+  animation: mmfadeOut .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+.micromodal-slide[aria-hidden="true"] .modal__container {
+  animation: mmslideOut .3s cubic-bezier(0, 0, .2, 1);
+}
+.micromodal-slide .modal__container,
+.micromodal-slide .modal__overlay {
+  will-change: transform;
+} 
+</style>
+<script type="text/javascript">
+  window.backupDefine = window.define; window.define = undefined;
+  /*  ansi_up.js
+   *  author : Dru Nelson
+   *  license : MIT
+   *  http://github.com/drudru/ansi_up
+   */
+   (function (root, factory) {
+      if (typeof define === 'function' && define.amd) {
+          // AMD. Register as an anonymous module.
+          define(['exports'], factory);
+      } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
+          // CommonJS
+          factory(exports);
+      } else {
+          // Browser globals
+          var exp = {};
+          factory(exp);
+          root.AnsiUp = exp.default;
+      }
+  }(this, function (exports) {
+  "use strict";
+  var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+      if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+      return cooked;
+  };
+  var PacketKind;
+  (function (PacketKind) {
+      PacketKind[PacketKind["EOS"] = 0] = "EOS";
+      PacketKind[PacketKind["Text"] = 1] = "Text";
+      PacketKind[PacketKind["Incomplete"] = 2] = "Incomplete";
+      PacketKind[PacketKind["ESC"] = 3] = "ESC";
+      PacketKind[PacketKind["Unknown"] = 4] = "Unknown";
+      PacketKind[PacketKind["SGR"] = 5] = "SGR";
+      PacketKind[PacketKind["OSCURL"] = 6] = "OSCURL";
+  })(PacketKind || (PacketKind = {}));
+  var AnsiUp = (function () {
+      function AnsiUp() {
+          this.VERSION = "5.1.0";
+          this.setup_palettes();
+          this._use_classes = false;
+          this.bold = false;
+          this.italic = false;
+          this.underline = false;
+          this.fg = this.bg = null;
+          this._buffer = '';
+          this._url_whitelist = { 'http': 1, 'https': 1 };
+      }
+      Object.defineProperty(AnsiUp.prototype, "use_classes", {
+          get: function () {
+              return this._use_classes;
+          },
+          set: function (arg) {
+              this._use_classes = arg;
+          },
+          enumerable: false,
+          configurable: true
+      });
+      Object.defineProperty(AnsiUp.prototype, "url_whitelist", {
+          get: function () {
+              return this._url_whitelist;
+          },
+          set: function (arg) {
+              this._url_whitelist = arg;
+          },
+          enumerable: false,
+          configurable: true
+      });
+      AnsiUp.prototype.setup_palettes = function () {
+          var _this = this;
+          this.ansi_colors =
+              [
+                  [
+                      { rgb: [0, 0, 0], class_name: "ansi-black" },
+                      { rgb: [187, 0, 0], class_name: "ansi-red" },
+                      { rgb: [0, 187, 0], class_name: "ansi-green" },
+                      { rgb: [187, 187, 0], class_name: "ansi-yellow" },
+                      { rgb: [0, 0, 187], class_name: "ansi-blue" },
+                      { rgb: [187, 0, 187], class_name: "ansi-magenta" },
+                      { rgb: [0, 187, 187], class_name: "ansi-cyan" },
+                      { rgb: [255, 255, 255], class_name: "ansi-white" }
+                  ],
+                  [
+                      { rgb: [85, 85, 85], class_name: "ansi-bright-black" },
+                      { rgb: [255, 85, 85], class_name: "ansi-bright-red" },
+                      { rgb: [0, 255, 0], class_name: "ansi-bright-green" },
+                      { rgb: [255, 255, 85], class_name: "ansi-bright-yellow" },
+                      { rgb: [85, 85, 255], class_name: "ansi-bright-blue" },
+                      { rgb: [255, 85, 255], class_name: "ansi-bright-magenta" },
+                      { rgb: [85, 255, 255], class_name: "ansi-bright-cyan" },
+                      { rgb: [255, 255, 255], class_name: "ansi-bright-white" }
+                  ]
+              ];
+          this.palette_256 = [];
+          this.ansi_colors.forEach(function (palette) {
+              palette.forEach(function (rec) {
+                  _this.palette_256.push(rec);
+              });
+          });
+          var levels = [0, 95, 135, 175, 215, 255];
+          for (var r = 0; r < 6; ++r) {
+              for (var g = 0; g < 6; ++g) {
+                  for (var b = 0; b < 6; ++b) {
+                      var col = { rgb: [levels[r], levels[g], levels[b]], class_name: 'truecolor' };
+                      this.palette_256.push(col);
+                  }
+              }
+          }
+          var grey_level = 8;
+          for (var i = 0; i < 24; ++i, grey_level += 10) {
+              var gry = { rgb: [grey_level, grey_level, grey_level], class_name: 'truecolor' };
+              this.palette_256.push(gry);
+          }
+      };
+      AnsiUp.prototype.escape_txt_for_html = function (txt) {
+          return txt.replace(/[&<>"']/gm, function (str) {
+              if (str === "&")
+                  return "&amp;";
+              if (str === "<")
+                  return "&lt;";
+              if (str === ">")
+                  return "&gt;";
+              if (str === "\"")
+                  return "&quot;";
+              if (str === "'")
+                  return "&#x27;";
+          });
+      };
+      AnsiUp.prototype.append_buffer = function (txt) {
+          var str = this._buffer + txt;
+          this._buffer = str;
+      };
+      AnsiUp.prototype.get_next_packet = function () {
+          var pkt = {
+              kind: PacketKind.EOS,
+              text: '',
+              url: ''
+          };
+          var len = this._buffer.length;
+          if (len == 0)
+              return pkt;
+          var pos = this._buffer.indexOf("\x1B");
+          if (pos == -1) {
+              pkt.kind = PacketKind.Text;
+              pkt.text = this._buffer;
+              this._buffer = '';
+              return pkt;
+          }
+          if (pos > 0) {
+              pkt.kind = PacketKind.Text;
+              pkt.text = this._buffer.slice(0, pos);
+              this._buffer = this._buffer.slice(pos);
+              return pkt;
+          }
+          if (pos == 0) {
+              if (len == 1) {
+                  pkt.kind = PacketKind.Incomplete;
+                  return pkt;
+              }
+              var next_char = this._buffer.charAt(1);
+              if ((next_char != '[') && (next_char != ']')) {
+                  pkt.kind = PacketKind.ESC;
+                  pkt.text = this._buffer.slice(0, 1);
+                  this._buffer = this._buffer.slice(1);
+                  return pkt;
+              }
+              if (next_char == '[') {
+                  if (!this._csi_regex) {
+                      this._csi_regex = rgx(__makeTemplateObject(["\n                        ^                           # beginning of line\n                                                    #\n                                                    # First attempt\n                        (?:                         # legal sequence\n                          \u001B[                      # CSI\n                          ([<-?]?)              # private-mode char\n                          ([d;]*)                    # any digits or semicolons\n                          ([ -/]?               # an intermediate modifier\n                          [@-~])                # the command\n                        )\n                        |                           # alternate (second attempt)\n                        (?:                         # illegal sequence\n                          \u001B[                      # CSI\n                          [ -~]*                # anything legal\n                          ([\0-\u001F:])              # anything illegal\n                        )\n                    "], ["\n                        ^                           # beginning of line\n                                                    #\n                                                    # First attempt\n                        (?:                         # legal sequence\n                          \\x1b\\[                      # CSI\n                          ([\\x3c-\\x3f]?)              # private-mode char\n                          ([\\d;]*)                    # any digits or semicolons\n                          ([\\x20-\\x2f]?               # an intermediate modifier\n                          [\\x40-\\x7e])                # the command\n                        )\n                        |                           # alternate (second attempt)\n                        (?:                         # illegal sequence\n                          \\x1b\\[                      # CSI\n                          [\\x20-\\x7e]*                # anything legal\n                          ([\\x00-\\x1f:])              # anything illegal\n                        )\n                    "]));
+                  }
+                  var match = this._buffer.match(this._csi_regex);
+                  if (match === null) {
+                      pkt.kind = PacketKind.Incomplete;
+                      return pkt;
+                  }
+                  if (match[4]) {
+                      pkt.kind = PacketKind.ESC;
+                      pkt.text = this._buffer.slice(0, 1);
+                      this._buffer = this._buffer.slice(1);
+                      return pkt;
+                  }
+                  if ((match[1] != '') || (match[3] != 'm'))
+                      pkt.kind = PacketKind.Unknown;
+                  else
+                      pkt.kind = PacketKind.SGR;
+                  pkt.text = match[2];
+                  var rpos = match[0].length;
+                  this._buffer = this._buffer.slice(rpos);
+                  return pkt;
+              }
+              if (next_char == ']') {
+                  if (len < 4) {
+                      pkt.kind = PacketKind.Incomplete;
+                      return pkt;
+                  }
+                  if ((this._buffer.charAt(2) != '8')
+                      || (this._buffer.charAt(3) != ';')) {
+                      pkt.kind = PacketKind.ESC;
+                      pkt.text = this._buffer.slice(0, 1);
+                      this._buffer = this._buffer.slice(1);
+                      return pkt;
+                  }
+                  if (!this._osc_st) {
+                      this._osc_st = rgxG(__makeTemplateObject(["\n                        (?:                         # legal sequence\n                          (\u001B\\)                    # ESC                           |                           # alternate\n                          (\u0007)                      # BEL (what xterm did)\n                        )\n                        |                           # alternate (second attempt)\n                        (                           # illegal sequence\n                          [\0-\u0006]                 # anything illegal\n                          |                           # alternate\n                          [\b-\u001A]                 # anything illegal\n                          |                           # alternate\n                          [\u001C-\u001F]                 # anything illegal\n                        )\n                    "], ["\n                        (?:                         # legal sequence\n                          (\\x1b\\\\)                    # ESC \\\n                          |                           # alternate\n                          (\\x07)                      # BEL (what xterm did)\n                        )\n                        |                           # alternate (second attempt)\n                        (                           # illegal sequence\n                          [\\x00-\\x06]                 # anything illegal\n                          |                           # alternate\n                          [\\x08-\\x1a]                 # anything illegal\n                          |                           # alternate\n                          [\\x1c-\\x1f]                 # anything illegal\n                        )\n                    "]));
+                  }
+                  this._osc_st.lastIndex = 0;
+                  {
+                      var match_1 = this._osc_st.exec(this._buffer);
+                      if (match_1 === null) {
+                          pkt.kind = PacketKind.Incomplete;
+                          return pkt;
+                      }
+                      if (match_1[3]) {
+                          pkt.kind = PacketKind.ESC;
+                          pkt.text = this._buffer.slice(0, 1);
+                          this._buffer = this._buffer.slice(1);
+                          return pkt;
+                      }
+                  }
+                  {
+                      var match_2 = this._osc_st.exec(this._buffer);
+                      if (match_2 === null) {
+                          pkt.kind = PacketKind.Incomplete;
+                          return pkt;
+                      }
+                      if (match_2[3]) {
+                          pkt.kind = PacketKind.ESC;
+                          pkt.text = this._buffer.slice(0, 1);
+                          this._buffer = this._buffer.slice(1);
+                          return pkt;
+                      }
+                  }
+                  if (!this._osc_regex) {
+                      this._osc_regex = rgx(__makeTemplateObject(["\n                        ^                           # beginning of line\n                                                    #\n                        \u001B]8;                    # OSC Hyperlink\n                        [ -:<-~]*       # params (excluding ;)\n                        ;                           # end of params\n                        ([!-~]{0,512})        # URL capture\n                        (?:                         # ST\n                          (?:\u001B\\)                  # ESC                           |                           # alternate\n                          (?:\u0007)                    # BEL (what xterm did)\n                        )\n                        ([ -~]+)              # TEXT capture\n                        \u001B]8;;                   # OSC Hyperlink End\n                        (?:                         # ST\n                          (?:\u001B\\)                  # ESC                           |                           # alternate\n                          (?:\u0007)                    # BEL (what xterm did)\n                        )\n                    "], ["\n                        ^                           # beginning of line\n                                                    #\n                        \\x1b\\]8;                    # OSC Hyperlink\n                        [\\x20-\\x3a\\x3c-\\x7e]*       # params (excluding ;)\n                        ;                           # end of params\n                        ([\\x21-\\x7e]{0,512})        # URL capture\n                        (?:                         # ST\n                          (?:\\x1b\\\\)                  # ESC \\\n                          |                           # alternate\n                          (?:\\x07)                    # BEL (what xterm did)\n                        )\n                        ([\\x20-\\x7e]+)              # TEXT capture\n                        \\x1b\\]8;;                   # OSC Hyperlink End\n                        (?:                         # ST\n                          (?:\\x1b\\\\)                  # ESC \\\n                          |                           # alternate\n                          (?:\\x07)                    # BEL (what xterm did)\n                        )\n                    "]));
+                  }
+                  var match = this._buffer.match(this._osc_regex);
+                  if (match === null) {
+                      pkt.kind = PacketKind.ESC;
+                      pkt.text = this._buffer.slice(0, 1);
+                      this._buffer = this._buffer.slice(1);
+                      return pkt;
+                  }
+                  pkt.kind = PacketKind.OSCURL;
+                  pkt.url = match[1];
+                  pkt.text = match[2];
+                  var rpos = match[0].length;
+                  this._buffer = this._buffer.slice(rpos);
+                  return pkt;
+              }
+          }
+      };
+      AnsiUp.prototype.ansi_to_html = function (txt) {
+          this.append_buffer(txt);
+          var blocks = [];
+          while (true) {
+              var packet = this.get_next_packet();
+              if ((packet.kind == PacketKind.EOS)
+                  || (packet.kind == PacketKind.Incomplete))
+                  break;
+              if ((packet.kind == PacketKind.ESC)
+                  || (packet.kind == PacketKind.Unknown))
+                  continue;
+              if (packet.kind == PacketKind.Text)
+                  blocks.push(this.transform_to_html(this.with_state(packet)));
+              else if (packet.kind == PacketKind.SGR)
+                  this.process_ansi(packet);
+              else if (packet.kind == PacketKind.OSCURL)
+                  blocks.push(this.process_hyperlink(packet));
+          }
+          return blocks.join("");
+      };
+      AnsiUp.prototype.with_state = function (pkt) {
+          return { bold: this.bold, italic: this.italic, underline: this.underline, fg: this.fg, bg: this.bg, text: pkt.text };
+      };
+      AnsiUp.prototype.process_ansi = function (pkt) {
+          var sgr_cmds = pkt.text.split(';');
+          while (sgr_cmds.length > 0) {
+              var sgr_cmd_str = sgr_cmds.shift();
+              var num = parseInt(sgr_cmd_str, 10);
+              if (isNaN(num) || num === 0) {
+                  this.fg = this.bg = null;
+                  this.bold = false;
+                  this.italic = false;
+                  this.underline = false;
+              }
+              else if (num === 1) {
+                  this.bold = true;
+              }
+              else if (num === 3) {
+                  this.italic = true;
+              }
+              else if (num === 4) {
+                  this.underline = true;
+              }
+              else if (num === 22) {
+                  this.bold = false;
+              }
+              else if (num === 23) {
+                  this.italic = false;
+              }
+              else if (num === 24) {
+                  this.underline = false;
+              }
+              else if (num === 39) {
+                  this.fg = null;
+              }
+              else if (num === 49) {
+                  this.bg = null;
+              }
+              else if ((num >= 30) && (num < 38)) {
+                  this.fg = this.ansi_colors[0][(num - 30)];
+              }
+              else if ((num >= 40) && (num < 48)) {
+                  this.bg = this.ansi_colors[0][(num - 40)];
+              }
+              else if ((num >= 90) && (num < 98)) {
+                  this.fg = this.ansi_colors[1][(num - 90)];
+              }
+              else if ((num >= 100) && (num < 108)) {
+                  this.bg = this.ansi_colors[1][(num - 100)];
+              }
+              else if (num === 38 || num === 48) {
+                  if (sgr_cmds.length > 0) {
+                      var is_foreground = (num === 38);
+                      var mode_cmd = sgr_cmds.shift();
+                      if (mode_cmd === '5' && sgr_cmds.length > 0) {
+                          var palette_index = parseInt(sgr_cmds.shift(), 10);
+                          if (palette_index >= 0 && palette_index <= 255) {
+                              if (is_foreground)
+                                  this.fg = this.palette_256[palette_index];
+                              else
+                                  this.bg = this.palette_256[palette_index];
+                          }
+                      }
+                      if (mode_cmd === '2' && sgr_cmds.length > 2) {
+                          var r = parseInt(sgr_cmds.shift(), 10);
+                          var g = parseInt(sgr_cmds.shift(), 10);
+                          var b = parseInt(sgr_cmds.shift(), 10);
+                          if ((r >= 0 && r <= 255) && (g >= 0 && g <= 255) && (b >= 0 && b <= 255)) {
+                              var c = { rgb: [r, g, b], class_name: 'truecolor' };
+                              if (is_foreground)
+                                  this.fg = c;
+                              else
+                                  this.bg = c;
+                          }
+                      }
+                  }
+              }
+          }
+      };
+      AnsiUp.prototype.transform_to_html = function (fragment) {
+          var txt = fragment.text;
+          if (txt.length === 0)
+              return txt;
+          txt = this.escape_txt_for_html(txt);
+          if (!fragment.bold && !fragment.italic && !fragment.underline && fragment.fg === null && fragment.bg === null)
+              return txt;
+          var styles = [];
+          var classes = [];
+          var fg = fragment.fg;
+          var bg = fragment.bg;
+          if (fragment.bold)
+              styles.push('font-weight:bold');
+          if (fragment.italic)
+              styles.push('font-style:italic');
+          if (fragment.underline)
+              styles.push('text-decoration:underline');
+          if (!this._use_classes) {
+              if (fg)
+                  styles.push("color:rgb(" + fg.rgb.join(',') + ")");
+              if (bg)
+                  styles.push("background-color:rgb(" + bg.rgb + ")");
+          }
+          else {
+              if (fg) {
+                  if (fg.class_name !== 'truecolor') {
+                      classes.push(fg.class_name + "-fg");
+                  }
+                  else {
+                      styles.push("color:rgb(" + fg.rgb.join(',') + ")");
+                  }
+              }
+              if (bg) {
+                  if (bg.class_name !== 'truecolor') {
+                      classes.push(bg.class_name + "-bg");
+                  }
+                  else {
+                      styles.push("background-color:rgb(" + bg.rgb.join(',') + ")");
+                  }
+              }
+          }
+          var class_string = '';
+          var style_string = '';
+          if (classes.length)
+              class_string = " class=\"" + classes.join(' ') + "\"";
+          if (styles.length)
+              style_string = " style=\"" + styles.join(';') + "\"";
+          return "<span" + style_string + class_string + ">" + txt + "</span>";
+      };
+      ;
+      AnsiUp.prototype.process_hyperlink = function (pkt) {
+          var parts = pkt.url.split(':');
+          if (parts.length < 1)
+              return '';
+          if (!this._url_whitelist[parts[0]])
+              return '';
+          var result = "<a href=\"" + this.escape_txt_for_html(pkt.url) + "\">" + this.escape_txt_for_html(pkt.text) + "</a>";
+          return result;
+      };
+      return AnsiUp;
+  }());
+  function rgx(tmplObj) {
+      var subst = [];
+      for (var _i = 1; _i < arguments.length; _i++) {
+          subst[_i - 1] = arguments[_i];
+      }
+      var regexText = tmplObj.raw[0];
+      var wsrgx = /^\s+|\s+\n|\s*#[\s\S]*?\n|\n/gm;
+      var txt2 = regexText.replace(wsrgx, '');
+      return new RegExp(txt2);
+  }
+  function rgxG(tmplObj) {
+      var subst = [];
+      for (var _i = 1; _i < arguments.length; _i++) {
+          subst[_i - 1] = arguments[_i];
+      }
+      var regexText = tmplObj.raw[0];
+      var wsrgx = /^\s+|\s+\n|\s*#[\s\S]*?\n|\n/gm;
+      var txt2 = regexText.replace(wsrgx, '');
+      return new RegExp(txt2, 'g');
+  }
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.default = AnsiUp;
+  }));
+  // micromodal: https://github.com/Ghosh/micromodal
+  !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).MicroModal=t()}(this,(function(){"use strict";function e(e,t){for(var o=0;o<t.length;o++){var n=t[o];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}function t(e){return function(e){if(Array.isArray(e))return o(e)}(e)||function(e){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}(e)||function(e,t){if(!e)return;if("string"==typeof e)return o(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);"Object"===n&&e.constructor&&(n=e.constructor.name);if("Map"===n||"Set"===n)return Array.from(e);if("Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return o(e,t)}(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function o(e,t){(null==t||t>e.length)&&(t=e.length);for(var o=0,n=new Array(t);o<t;o++)n[o]=e[o];return n}var n,i,a,r,s,l=(n=["a[href]","area[href]",'input:not([disabled]):not([type="hidden"]):not([aria-hidden])',"select:not([disabled]):not([aria-hidden])","textarea:not([disabled]):not([aria-hidden])","button:not([disabled]):not([aria-hidden])","iframe","object","embed","[contenteditable]",'[tabindex]:not([tabindex^="-"])'],i=function(){function o(e){var n=e.targetModal,i=e.triggers,a=void 0===i?[]:i,r=e.onShow,s=void 0===r?function(){}:r,l=e.onClose,c=void 0===l?function(){}:l,d=e.openTrigger,u=void 0===d?"data-micromodal-trigger":d,f=e.closeTrigger,h=void 0===f?"data-micromodal-close":f,v=e.openClass,g=void 0===v?"is-open":v,m=e.disableScroll,b=void 0!==m&&m,y=e.disableFocus,p=void 0!==y&&y,w=e.awaitCloseAnimation,E=void 0!==w&&w,k=e.awaitOpenAnimation,M=void 0!==k&&k,A=e.debugMode,C=void 0!==A&&A;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,o),this.modal=document.getElementById(n),this.config={debugMode:C,disableScroll:b,openTrigger:u,closeTrigger:h,openClass:g,onShow:s,onClose:c,awaitCloseAnimation:E,awaitOpenAnimation:M,disableFocus:p},a.length>0&&this.registerTriggers.apply(this,t(a)),this.onClick=this.onClick.bind(this),this.onKeydown=this.onKeydown.bind(this)}var i,a,r;return i=o,(a=[{key:"registerTriggers",value:function(){for(var e=this,t=arguments.length,o=new Array(t),n=0;n<t;n++)o[n]=arguments[n];o.filter(Boolean).forEach((function(t){t.addEventListener("click",(function(t){return e.showModal(t)}))}))}},{key:"showModal",value:function(){var e=this,t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null;if(this.activeElement=document.activeElement,this.modal.setAttribute("aria-hidden","false"),this.modal.classList.add(this.config.openClass),this.scrollBehaviour("disable"),this.addEventListeners(),this.config.awaitOpenAnimation){var o=function t(){e.modal.removeEventListener("animationend",t,!1),e.setFocusToFirstNode()};this.modal.addEventListener("animationend",o,!1)}else this.setFocusToFirstNode();this.config.onShow(this.modal,this.activeElement,t)}},{key:"closeModal",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,t=this.modal;if(this.modal.setAttribute("aria-hidden","true"),this.removeEventListeners(),this.scrollBehaviour("enable"),this.activeElement&&this.activeElement.focus&&this.activeElement.focus(),this.config.onClose(this.modal,this.activeElement,e),this.config.awaitCloseAnimation){var o=this.config.openClass;this.modal.addEventListener("animationend",(function e(){t.classList.remove(o),t.removeEventListener("animationend",e,!1)}),!1)}else t.classList.remove(this.config.openClass)}},{key:"closeModalById",value:function(e){this.modal=document.getElementById(e),this.modal&&this.closeModal()}},{key:"scrollBehaviour",value:function(e){if(this.config.disableScroll){var t=document.querySelector("body");switch(e){case"enable":Object.assign(t.style,{overflow:""});break;case"disable":Object.assign(t.style,{overflow:"hidden"})}}}},{key:"addEventListeners",value:function(){this.modal.addEventListener("touchstart",this.onClick),this.modal.addEventListener("click",this.onClick),document.addEventListener("keydown",this.onKeydown)}},{key:"removeEventListeners",value:function(){this.modal.removeEventListener("touchstart",this.onClick),this.modal.removeEventListener("click",this.onClick),document.removeEventListener("keydown",this.onKeydown)}},{key:"onClick",value:function(e){(e.target.hasAttribute(this.config.closeTrigger)||e.target.parentNode.hasAttribute(this.config.closeTrigger))&&(e.preventDefault(),e.stopPropagation(),this.closeModal(e))}},{key:"onKeydown",value:function(e){27===e.keyCode&&this.closeModal(e),9===e.keyCode&&this.retainFocus(e)}},{key:"getFocusableNodes",value:function(){var e=this.modal.querySelectorAll(n);return Array.apply(void 0,t(e))}},{key:"setFocusToFirstNode",value:function(){var e=this;if(!this.config.disableFocus){var t=this.getFocusableNodes();if(0!==t.length){var o=t.filter((function(t){return!t.hasAttribute(e.config.closeTrigger)}));o.length>0&&o[0].focus(),0===o.length&&t[0].focus()}}}},{key:"retainFocus",value:function(e){var t=this.getFocusableNodes();if(0!==t.length)if(t=t.filter((function(e){return null!==e.offsetParent})),this.modal.contains(document.activeElement)){var o=t.indexOf(document.activeElement);e.shiftKey&&0===o&&(t[t.length-1].focus(),e.preventDefault()),!e.shiftKey&&t.length>0&&o===t.length-1&&(t[0].focus(),e.preventDefault())}else t[0].focus()}}])&&e(i.prototype,a),r&&e(i,r),o}(),a=null,r=function(e){if(!document.getElementById(e))return console.warn("MicroModal: ❗Seems like you have missed %c'".concat(e,"'"),"background-color: #f8f9fa;color: #50596c;font-weight: bold;","ID somewhere in your code. Refer example below to resolve it."),console.warn("%cExample:","background-color: #f8f9fa;color: #50596c;font-weight: bold;",'<div class="modal" id="'.concat(e,'"></div>')),!1},s=function(e,t){if(function(e){e.length<=0&&(console.warn("MicroModal: ❗Please specify at least one %c'micromodal-trigger'","background-color: #f8f9fa;color: #50596c;font-weight: bold;","data attribute."),console.warn("%cExample:","background-color: #f8f9fa;color: #50596c;font-weight: bold;",'<a href="#" data-micromodal-trigger="my-modal"></a>'))}(e),!t)return!0;for(var o in t)r(o);return!0},{init:function(e){var o=Object.assign({},{openTrigger:"data-micromodal-trigger"},e),n=t(document.querySelectorAll("[".concat(o.openTrigger,"]"))),r=function(e,t){var o=[];return e.forEach((function(e){var n=e.attributes[t].value;void 0===o[n]&&(o[n]=[]),o[n].push(e)})),o}(n,o.openTrigger);if(!0!==o.debugMode||!1!==s(n,r))for(var l in r){var c=r[l];o.targetModal=l,o.triggers=t(c),a=new i(o)}},show:function(e,t){var o=t||{};o.targetModal=e,!0===o.debugMode&&!1===r(e)||(a&&a.removeEventListeners(),(a=new i(o)).showModal())},close:function(e){e?a.closeModalById(e):a.closeModal()}});return"undefined"!=typeof window&&(window.MicroModal=l),l}));  
+  window.define = window.backupDefine; window.backupDefine = undefined;
+  </script>
+<script type="text/javascript">
+  (function () {
+    // forward keydown events so shortcuts can work in vscode, see:
+    // https://github.com/microsoft/vscode/issues/65452#issuecomment-586485815
+    if (window.parent.postMessage) {
+      window.document.addEventListener('keydown', e => {
+        const event = {
+          type: "keydown",
+          data: {
+            altKey: e.altKey,
+            code: e.code,
+            ctrlKey: e.ctrlKey,
+            isComposing: e.isComposing,
+            key: e.key,
+            location: e.location,
+            metaKey: e.metaKey,
+            repeat: e.repeat,
+            shiftKey: e.shiftKey
+          }
+        };
+        window.parent.postMessage(event, '*');
+      });
+    }
+    // listen for execCommand messages
+    window.addEventListener("message", function (event) {
+      if (event.data.type === "devhost-exec-command") {
+        window.document.execCommand(event.data.data);
+      } 
+    }, true);
+    const logEntries = new Array(1000);
+    logEntries.offset = 0;
+    function recordLogEntry(entry) {
+      logEntries[logEntries.offset++] = entry;
+      logEntries.offset %= logEntries.length;
+    }
+    function getLogEntry(i) { // backwards, 0 is most recent
+        return logEntries[(logEntries.offset - 1 - i + logEntries.length) % logEntries.length];
+    }
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    let path = window.location.pathname;
+    if (!/\/$/.test(path)) path += "/";
+    const devServerSocket = new WebSocket(protocol + "//" + window.location.host + path);
+    let reloadPage = true;
+    addEventListener("beforeunload", () => {
+      // don't reload page in case of navigation events
+      reloadPage = false;
+    })
+    devServerSocket.onopen = () => {
+      console.log('Socket connection open. Listening for events.');
+      // if the socket closes for any reason (e.g. this occurs in electron apps
+      // when the computer suspends) then reload to reestablish the connection 
+      devServerSocket.onclose = () => {
+        if (reloadPage) {
+          console.log('Socket connection closed. Reloading.');
+          window.location.reload(true);
+        }
+      }
+    };
+    // append for errors that occur within the error window
+    let lastError = 0;
+    const kErrorWindow = 2500;
+    function showError(msg) {
+      const ansiUp = new AnsiUp
+      const html = ansiUp.ansi_to_html(msg.trim());
+      const display = document.getElementById("quarto-log-error-display");
+      if (display.innerHTML && ((Date.now() - lastError) < kErrorWindow)) {
+        display.innerHTML = display.innerHTML + "<br/>" +  html;
+      } else {
+        display.innerHTML = html
+      }
+      lastError = Date.now()
+      MicroModal.show('quarto-log-error-modal', {
+        awaitCloseAnimation: true,
+        onClose: () => { display.innerHTML = ""; }
+      });
+      // post message to parent indicating we had an error
+      if (window.parent.postMessage) {
+        window.parent.postMessage({
+          type: "error",
+          msg: msg,
+        }, "*");
+      }
+    }
+    // see if there is already an error to show
+    const renderError = document.getElementById("quarto-render-error");
+    if (renderError) {
+      showError(renderError.innerHTML.trim());
+    }
+    const normalizeTarget = (target) => {
+      return target.replace(/\/index\.html/, "/")
+    };
+    devServerSocket.onmessage = (msg) => {
+      if (msg.data.startsWith('reload')) {
+        let target = normalizeTarget(msg.data.replace(/^reload/, ""));
+        // prepend proxy path to target if we have one
+        if (target) {
+          const pathPrefix = 
+            window.location.pathname.match(/^.*?\/p\/\w+\//) ||
+            window.location.pathname.match(/^.*?\/user\/[\w\d]+\/proxy\/\d+\//);
+          if (pathPrefix) {
+            target = pathPrefix + target.slice(1);
+          }
+        }
+        if (target && (target !== normalizeTarget(window.location.pathname))) {
+          window.location.replace(target);
+        } else {
+          window.location.reload(true);
+        }
+      } else if (msg.data.startsWith('log:')) {
+        const ansiUp = new AnsiUp
+        const log = JSON.parse(msg.data.substr(4));
+        recordLogEntry(log);
+        if (log.levelName === "ERROR") {
+          showError(log.msgFormatted)
+        } else {
+          // see if there is a knitr error to report
+          const kExecutionHalted = "Execution halted";
+          if (log.msg.indexOf(kExecutionHalted) !== -1) {
+            // scan backwards for beginning of error
+            const errorEntries = [getLogEntry(0).msgFormatted];
+            for (let i=1; i<logEntries.length; i++) {
+              const logEntry = getLogEntry(i);
+              if (logEntry) {
+                errorEntries.unshift(logEntry.msgFormatted);
+                if (logEntry.msg.indexOf("Quitting from lines") !== -1) {
+                  showError(errorEntries.join(""));
+                  break;
+                } else if (logEntry.msg.indexOf(kExecutionHalted) !== -1) {
+                  break;
+                }
+              } else {
+                break;
+              }
+            }
+          }
+        }
+      }
+    };
+  })();
+</script>
+
+<script type="text/javascript">
+  if (window.parent.postMessage) {
+    // wait for message providing confirmation we are in a devhost
+    window.addEventListener("message", function (event) {
+      if (event.data.type === "devhost-init") {
+        window.quartoDevhost = {
+          openInputFile: function (line, column, highlight) {
+            window.parent.postMessage({
+              type: "openfile",
+              file: "/Users/ulrike_imac_air/projects/Trial_and_error/analysis/layoffs_nas_2023.qmd",
+              line: line,
+              column: column,
+              highlight: highlight
+            }, event.origin);
+          }
+        };
+      } else if (event.data.type === "goback") {
+        window.history.back()
+      } else if (event.data.type === "goforward") {
+        window.history.forward()
+      }
+    }, true);
+    // notify host of navigation (e.g. for 'pop out' command)
+    window.parent.postMessage({
+      type: "navigate",
+      href: window.location.href,
+      file: "/Users/ulrike_imac_air/projects/Trial_and_error/analysis/layoffs_nas_2023.qmd"
+    }, "*");
+  }
+</script>
