@@ -5,4 +5,6 @@
 05. Visualisation themes and colours
 05. Learning charts in R - today pie, donut and diverging charts
 
-06.01.2024 - Done some exercise charts in R and then some exercise coding in Python
+05.01.2024 - Done some exercise charts in R and then some exercise coding in Python
+06.01.2024 - R - Tech_Layoff_data without analysis continues
+
