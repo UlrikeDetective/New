@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cafes with WiFi and Power in San Francisco</title>
+  <link rel="stylesheet" href="wifi_cafe.css">
+</head>
+<body>
+  <header>
+    <h1>Cafes with WiFi and Power in San Francisco</h1>
+  </header>
+<ul>
+        {% for cafe in cafes %}
+        <li>
+            <h2>{{ cafe[1] }}</h2>
+            <p>{{ cafe[2] }}</p>
+            <!-- Display other cafe details as needed -->
+        </li>
+        {% endfor %}
+</ul>
+</body>
+</html>
+
+  
+  <main>
+    <section class="cafe-list">
+      <div class="cafe">
+        <h2>Cafe 1</h2>
+        <p>Description of Cafe 1 with details about WiFi and Power availability.</p>
+      </div>
+      
+      <!-- Add more cafes as needed -->
+      
+    </section>
+  </main>
+</body>
+</html>
+
