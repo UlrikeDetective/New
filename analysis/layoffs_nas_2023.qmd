@@ -16,7 +16,7 @@ Data cleaning - removed from location column non-USA.
 
 Added two columns: company size before layoff and company size after layoffs.
 
-Data cleaning layoffs2023_data: modified companies names, add two new columns: country and continent
+Data cleaning layoffs2023_data: modified companies names, added new columns: country, continent and coordinates
 
 Observations: There is a lot off missing data for the columns laid off and in Percent.
 
@@ -70,7 +70,7 @@ my_palette_custom_all <- c("#34f5ff", "#33eff9", "#32e9f3", "#32e3ec", "#31dde6"
 my_palette_TealGrn <- paletteer::paletteer_c("grDevices::TealGrn", 30)
 my_palette_Blue_Yellow <- paletteer::paletteer_c("grDevices::Blue-Yellow", 30)
 
-my_colors <- c("darkblue", "darkslategray4", "darkslategray2","yellow", "azure3", "aquamarine2", "cornflowerblue", "lightyellow", "cadetblue2","blue1","cyan","deepskyblue1","lightblue","darkgoldenrod", "deepskyblue", "azure1", "aquamarine", "darkgoldenrod1", "cadetblue", "blue2","cyan1", "deepskyblue2", "darkslategray1", "darkgoldenrod2", "azure2", "aquamarine3", "cadetblue3", "blue3", "cyan2", "deepskyblue3", "darkslategray3", "azure", "cyan3", "blue4", "deepskyblue4", "cadetblue4", "lightyellow")
+my_colors <- c("darkblue", "darkslategray4", "darkslategray2","yellow", "azure3", "aquamarine2", "cornflowerblue", "lightyellow", "cadetblue2","blue1","cyan", "azure1", "aquamarine", "darkgoldenrod1", "cadetblue", "blue2","cyan1", "deepskyblue2", "darkslategray1", "darkgoldenrod2", "azure2", "aquamarine3", "cadetblue3", "blue3", "cyan2", "deepskyblue3", "darkslategray3", "azure", "cyan3", "blue4", "deepskyblue4", "cadetblue4", "lightyellow", "deepskyblue1","lightblue","darkgoldenrod", "deepskyblue")
 
 my_colors5 <- c("yellow", "#deff25", "#44c6b7", "#601ed3", "#190fe4")
 my_colors3 <- c("yellow", "#190fe4", "#44c6b7")
@@ -279,6 +279,33 @@ country_count_desc_na
 
 top_10_countries_na <- head(country_count_desc_na, 10)
 top_10_countries_na
+
+```
+
+**Reported Layoffs by city (Location_HQ)**
+
+```{r, echo = FALSE}
+#Example countries
+city_count_na <- Layoffs_Tracker_without_na %>% 
+  count(Location_HQ)
+
+city_count_desc_na <- city_count_na %>% 
+  arrange(desc(n))
+
+city_count_desc_na
+
+cat("\n")
+
+top_10_city_na <- head(city_count_desc_na, 10)
+top_10_city_na
+
+cat("\n")
+
+unique_city_list_na <- unique(Layoffs_Tracker_without_na$Location_HQ)
+unique_city_list_na <- sort(unique_city_list_na)
+
+# View the list of unique countries
+# print(unique_city_list_na)
 
 ```
 
@@ -1128,4 +1155,255 @@ ggplot(Top_5_Germany_locations_na, aes(x = reorder(Location_HQ, -n), y = n, fill
    scale_fill_manual(values = my_palette_Blue_Yellow) +
   coord_flip() +
   custom_theme_white_nolegend()
+```
+
+**Timeline of reported Layoffs:**
+
+```{r, echo = FALSE}
+Layoffs_Tracker_without_na$Percentage <- round(Layoffs_Tracker_without_na$Percentage, 1)
+
+Layoffs_Tracker_without_na
+```
+
+```{r, echo = FALSE}
+library(ggplot2)
+library(dplyr)
+
+# Assuming your data frame is named 'df'
+# Convert 'Date_layoffs' column to Date format if it's not already
+Layoffs_Tracker_without_na$Date_layoffs <- as.Date(Layoffs_Tracker_without_na$Date_layoffs)
+
+# Aggregate the data by date
+agg_data <- Layoffs_Tracker_without_na %>%
+  group_by(Date_layoffs) %>%
+  summarise(total_laid_off = sum(Laid_Off))  # Summing 'Laid_off' for each date
+
+# Plotting the timeline line chart
+ggplot(agg_data, aes(x = Date_layoffs, y = total_laid_off)) +
+  geom_line() +
+  labs(x = "Date of Layoffs", y = "Total Laid Off") +
+  ggtitle("Timeline of Layoffs") +
+  custom_theme_white_nolegend()
+
+```
+
+**Timeline aggregated after month and year**
+
+```{r, echo = FALSE}
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Assuming your data frame is named 'Layoffs_Tracker_without_na'
+
+# Convert 'Date_layoffs' column to Date format if it's not already
+Layoffs_Tracker_without_na$Date_layoffs <- as.Date(Layoffs_Tracker_without_na$Date_layoffs)
+
+# Create a new column with combined Year and Month
+Layoffs_Tracker_without_na$YearMonth <- format(Layoffs_Tracker_without_na$Date_layoffs, "%Y-%m")
+
+# Aggregate the data by YearMonth
+agg_data <- Layoffs_Tracker_without_na %>%
+  group_by(YearMonth) %>%
+  summarise(total_laid_off = sum(Laid_Off))  # Summing 'Laid_off' for each YearMonth
+
+# Plotting the timeline line chart
+ggplot(agg_data, aes(x = as.Date(paste0(YearMonth, "-01")), y = total_laid_off)) +
+  geom_line() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +  # Display only the year
+  labs(x = "Year of Layoffs", y = "Total Laid Off") +
+  ggtitle("Timeline of Layoffs by Year") +
+  custom_theme_white_nolegend()
+
+
+```
+
+**Month with highest reported layoffs per year**
+
+```{r, echo = FALSE}
+library(dplyr)
+library(tidyr)
+
+# Assuming you have 'YearMonth' as a character column in 'agg_data'
+# Convert 'YearMonth' to Date format for easy manipulation
+agg_data$Date <- as.Date(paste0(agg_data$YearMonth, "-01"))
+
+# Extract month and year separately
+agg_data <- agg_data %>%
+  mutate(Year = lubridate::year(Date), Month = lubridate::month(Date, label = TRUE, abbr = TRUE))
+
+# Group by Year and Month, summarise to find total Laid_Off
+monthly_summary <- agg_data %>%
+  group_by(Year, Month) %>%
+  summarise(total_laid_off = sum(total_laid_off)) %>%
+  arrange(desc(total_laid_off))  # Arrange by total Laid_Off in descending order
+
+# Select the top month and year with the most Laid_Off
+top_month_year <- monthly_summary %>% slice(1)
+
+# Display the table
+top_month_year
+
+```
+
+**Month with the highest reported layoffs**
+
+```{r, echo = FALSE}
+# Assuming 'monthly_summary' contains the aggregated data by month and year
+
+# Group by Year, Month, and summarise to find total Laid_Off
+overall_monthly_summary <- monthly_summary %>%
+  group_by(Year, Month) %>%
+  summarise(total_laid_off = sum(total_laid_off)) %>%
+  ungroup()  # Remove grouping
+
+# Select the top 5 months with the highest total Laid_Off
+top_5_overall <- overall_monthly_summary %>%
+  arrange(desc(total_laid_off)) %>%  # Arrange by total Laid_Off in descending order
+  slice(1:5)  # Select the top 5 entries
+
+# Display the table of top 5 overall months with their corresponding years and Laid_Off
+top_5_overall
+
+
+```
+
+**Companies with the highest layoffs in the TOP 5 monthly layoffs**
+
+```{r, echo = FALSE}
+library(dplyr)
+
+# Assuming the column for the number of layoffs is named Laid_Off
+companies_with_laid_off_count <- Layoffs_Tracker_without_na %>%
+  group_by(Company) %>%
+  summarise(total_laid_off = sum(Laid_Off)) %>%
+  arrange(desc(total_laid_off))  # Arranging in descending order of total layoffs
+
+# If you want just the top 10 companies by layoffs:
+top_10_companies <- companies_with_laid_off_count %>%
+  top_n(10, wt = total_laid_off)
+
+# To view the table for all companies or the top 10:
+print(companies_with_laid_off_count)
+print(top_10_companies)
+
+
+```
+
+**Companies with 100 % Layoffs**
+
+```{r, echo = FALSE}
+companies_percentage_100 <- Layoffs_Tracker_without_na %>%
+  filter(Percentage == 100.0) %>%
+  select(Company, Country, Continent) %>%
+  arrange(Company) %>%
+  distinct()
+
+
+unique_companies_100_percentage <- unique(companies_percentage_100)
+
+total_companies_100_percentage <- companies_percentage_100 %>%
+  summarise(Count = n_distinct(Company))
+
+print(paste("The dataset are", total_companies_100_percentage, "entries with 100% layoffs reported."))
+
+cat("\n")
+
+# companies_only <- unique_companies_100_percentage$Company
+
+# print(paste("The companies are:", paste(companies_only, collapse = ", ")))
+
+print(paste("The companies are"))
+
+unique_companies_100_percentage
+
+```
+
+# - Layoffs in total (how many people were laid off - total, by continent, by country, by city)
+
+# - how many companies laid more than 50 and 75 % off?
+
+# - what to do with maps?
+
+**Maps of Layoffs**
+
+```{r, echo = FALSE}
+# Assuming Layoffs_Tracker_without_na contains columns "Continent" and "Laid_off"
+
+library(ggplot2)
+library(maps)
+
+# First, aggregate the data by Continent and calculate the total laid off per Continent
+library(dplyr)
+
+# Assuming your data frame is named Layoffs_Tracker_without_na
+continent_summary <- Layoffs_Tracker_without_na %>%
+  group_by(Continent) %>%
+  summarise(total_laid_off = sum(Laid_Off))
+
+# Now, create a leaflet map
+library(leaflet)
+
+# You might need to install additional packages for country boundaries
+# install.packages("leaflet.extras")
+
+# Create a leaflet map
+leaflet(data = continent_summary) %>%
+  addTiles() %>%
+  setView(lng = 0, lat = 30, zoom = 2) %>%  # Set initial view
+  addCircles(
+    lng = 0, lat = 30,  # Set center point of circles (adjust as needed)
+    radius = ~sqrt(total_laid_off) * 10000,  # Adjust the scale factor as needed
+    color = "red", fillColor = "red", fillOpacity = 0.5,
+    popup = ~paste(Continent, "<br>", "Total Laid Off:", total_laid_off)
+  )
+
+
+```
+
+\#
+
+```{r, echo = FALSE}
+# Assuming Layoffs_Tracker_without_na contains columns "Continent" and "Laid_off"
+
+# Check the data types of columns
+# str(Layoffs_Tracker_without_na)
+
+# Convert Continent to factor if it's character
+# Layoffs_Tracker_without_na$Continent <- as.factor(Layoffs_Tracker_without_na$Continent)
+
+# Ensure Laid_off is numeric or integer
+# Layoffs_Tracker_without_na$Laid_Off <- as.numeric(Layoffs_Tracker_without_na$Laid_Off)
+
+# Check the structure again to ensure correct types
+# str(Layoffs_Tracker_without_na)
+
+# install.packages("osmdata")
+# install.packages("sf")
+
+
+```
+
+**Searching Coordinates:**
+
+```{r}
+library(osmdata)
+library(sf)
+
+# List of cities
+cities <- c("Ahmedabad", "Amsterdam", "Ann Arbor")
+
+# Create an empty list to store the results
+coordinates <- list()
+
+# Fetch coordinates for each city
+for (city in cities) {
+  query <- opq(city)
+  query <- add_osm_feature(query, key = "place", value = "city")
+  result <- osmdata_sf(query)
+  coordinates[[city]] <- result$osm_points
+}
+
+# View the coordinates for a specific city (e.g., Ahmedabad)
+view(coordinates[["Ann Arbor"]])
 ```
