@@ -1181,6 +1181,7 @@ agg_data <- Layoffs_Tracker_without_na %>%
 # Plotting the timeline line chart
 ggplot(agg_data, aes(x = Date_layoffs, y = total_laid_off)) +
   geom_line() +
+  geom_smooth(se = FALSE) +
   labs(x = "Date of Layoffs", y = "Total Laid Off") +
   ggtitle("Timeline of Layoffs") +
   custom_theme_white_nolegend()
@@ -1190,6 +1191,10 @@ ggplot(agg_data, aes(x = Date_layoffs, y = total_laid_off)) +
 **Timeline aggregated after month and year**
 
 ```{r, echo = FALSE}
+# install.packages("ggplot2")
+# install.packages("ggpmisc")
+
+library(ggpmisc)
 library(ggplot2)
 library(dplyr)
 library(lubridate)
@@ -1210,10 +1215,20 @@ agg_data <- Layoffs_Tracker_without_na %>%
 # Plotting the timeline line chart
 ggplot(agg_data, aes(x = as.Date(paste0(YearMonth, "-01")), y = total_laid_off)) +
   geom_line() +
+  geom_point() +
+  geom_smooth(se = FALSE) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +  # Display only the year
   labs(x = "Year of Layoffs", y = "Total Laid Off") +
   ggtitle("Timeline of Layoffs by Year") +
-  custom_theme_white_nolegend()
+  custom_theme_white_nolegend() +
+  stat_valleys(geom = "point", span = 11, color = "red", size = 2) +
+  stat_valleys(geom = "label", span = 11, color = "red", angle = 0,
+               hjust = -0.1, x.label.fmt = "%Y-%m-%d") +
+  stat_valleys(geom = "rug", span = 11, color = "red", sides = "b") +
+  stat_peaks(geom = "point", span = 15, color = "steelblue3", size = 2) +
+  stat_peaks(geom = "label", span = 15, color = "steelblue3", angle = 0,
+             hjust = -0.1, x.label.fmt = "%Y-%m-%d") +
+  stat_peaks(geom = "rug", span = 15, color = "blue", sides = "b") 
 
 
 ```
